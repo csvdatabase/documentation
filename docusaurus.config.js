@@ -46,7 +46,18 @@ const config = {
         alt: "CSDB",
         src: "img/csdb-logo.png"
       },
-      items: []
+      items: [
+        { label: "Homepage", href: "https://csvdatabase.net/" },
+        {
+          type: "dropdown",
+          label: "GitHub",
+          items: [
+            { label: "specs", href: "https://github.com/csvdatabase/specs" },
+            { label: "csdb-javascript", href: "https://github.com/csvdatabase/csdb-javascript" },
+            { label: "csdb-python", href: "https://github.com/csvdatabase/csdb-python" }
+          ]
+        }
+      ]
     },
     footer: {
       style: "dark",
