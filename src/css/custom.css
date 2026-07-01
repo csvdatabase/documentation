@@ -42,6 +42,23 @@
   padding: 2rem 0 1rem;
 }
 
+.development-callout {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  color: #7c2d12;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1rem;
+}
+
+[data-theme="dark"] .development-callout {
+  background: rgba(124, 45, 18, 0.24);
+  border-color: rgba(251, 146, 60, 0.45);
+  color: #fed7aa;
+}
+
 .csdb-kicker {
   color: var(--ifm-color-primary);
   font-weight: 700;
