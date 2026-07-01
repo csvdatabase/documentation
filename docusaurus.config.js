@@ -47,6 +47,12 @@ const config = {
         src: "img/csdb-logo.png"
       },
       items: [
+        {
+          type: "custom-versionRegistry",
+          label: "Version",
+          position: "right",
+          versionsUrl: "https://docs.csvdatabase.net/versions.json"
+        },
         { label: "Homepage", href: "https://csvdatabase.net/" },
         {
           type: "dropdown",
@@ -116,7 +122,8 @@ const config = {
     },
     colorMode: {
       defaultMode: "light",
-      respectPrefersColorScheme: true
+      respectPrefersColorScheme: true,
+      disableSwitch: true
     }
   }
 };
