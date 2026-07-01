@@ -1,0 +1,361 @@
+---
+id: table-query
+title: TableQuery
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+`TableQuery` builds table-scoped selections and mutations. Query builder methods mutate the builder and return it.
+
+## Filter Rows
+
+Add a predicate. Calls are combined with `AND`.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.table("workers").where("id", "=", "w_001");
+db.table("workers").where({ email: "ada@example.com" });
+db.table("workers").where("email IS NOT NULL");
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.table("workers").where("id", "=", "w_001")
+db.table("workers").where({"email": "ada@example.com"})
+db.table("workers").where("email IS NOT NULL")
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+SELECT * FROM workers WHERE id = 'w_001';
+SELECT * FROM workers WHERE email = 'ada@example.com';
+SELECT * FROM workers WHERE email IS NOT NULL;
+```
+
+</TabItem>
+</Tabs>
+
+Supported comparison operators are `=`, `!=`, `<>`, `>`, `>=`, `<`, and `<=`.
+
+## Select Columns
+
+Choose projected columns.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.table("workers").select(["id", "email"]).all();
+db.table("workers").select("*").all();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.table("workers").select(["id", "email"]).all()
+db.table("workers").select("*").all()
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+SELECT id, email FROM workers;
+SELECT * FROM workers;
+```
+
+</TabItem>
+</Tabs>
+
+## Join Tables
+
+Join a foreign-key relationship by relationship name.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.table("sessions").join("worker").all();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.table("sessions").join("worker").all()
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+SELECT sessions.*, workers.*
+FROM sessions
+JOIN workers ON sessions.worker_id = workers.id;
+```
+
+</TabItem>
+</Tabs>
+
+## Sort Rows
+
+Sort results by a column.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.table("workers").orderBy("id", "desc").all();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.table("workers").order_by("id", "desc").all()
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+SELECT *
+FROM workers
+ORDER BY id DESC;
+```
+
+</TabItem>
+</Tabs>
+
+## Limit Rows
+
+Restrict result count.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.table("workers").limit(10).all();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.table("workers").limit(10).all()
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+SELECT *
+FROM workers
+LIMIT 10;
+```
+
+</TabItem>
+</Tabs>
+
+## Read All Rows
+
+Execute the select query and return rows.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const rows = db.table("workers").all();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+rows = db.table("workers").all()
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+SELECT * FROM workers;
+```
+
+</TabItem>
+</Tabs>
+
+## Read First Row
+
+Return the first matching row or no value.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const worker = db.table("workers").where("id", "=", "w_001").first();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+worker = db.table("workers").where("id", "=", "w_001").first()
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+SELECT *
+FROM workers
+WHERE id = 'w_001'
+LIMIT 1;
+```
+
+</TabItem>
+</Tabs>
+
+## Insert Rows
+
+Insert one row or many rows.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.table("workers").insert({ id: "w_001", name: "Ada", email: "ada@example.com" });
+db.table("workers").insert([
+  { id: "w_002", name: "Grace", email: "grace@example.com" }
+]);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.table("workers").insert({"id": "w_001", "name": "Ada", "email": "ada@example.com"})
+db.table("workers").insert([
+    {"id": "w_002", "name": "Grace", "email": "grace@example.com"}
+])
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+INSERT INTO workers (id, name, email)
+VALUES ('w_001', 'Ada', 'ada@example.com');
+
+INSERT INTO workers (id, name, email)
+VALUES ('w_002', 'Grace', 'grace@example.com');
+```
+
+</TabItem>
+</Tabs>
+
+## Update Rows
+
+Update matching rows.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.table("workers").where("id", "=", "w_001").update({ email: "ada@csdb.dev" });
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.table("workers").where("id", "=", "w_001").update({"email": "ada@csdb.dev"})
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+UPDATE workers
+SET email = 'ada@csdb.dev'
+WHERE id = 'w_001';
+```
+
+</TabItem>
+</Tabs>
+
+## Delete Rows
+
+Delete matching rows.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.table("workers").where("id", "=", "w_001").delete();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.table("workers").where("id", "=", "w_001").delete()
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+DELETE FROM workers
+WHERE id = 'w_001';
+```
+
+</TabItem>
+</Tabs>
+
+## Find By Primary Key
+
+Find a row using the table's primary key index.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const worker = db.table("workers").byPrimaryKey("w_001");
+const line = db.table("invoice_lines").byPrimaryKey(["inv_001", "line_1"]);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+worker = db.table("workers").by_primary_key("w_001")
+line = db.table("invoice_lines").by_primary_key(["inv_001", "line_1"])
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+SELECT *
+FROM workers
+WHERE id = 'w_001'
+LIMIT 1;
+
+SELECT *
+FROM invoice_lines
+WHERE invoice_id = 'inv_001' AND id = 'line_1'
+LIMIT 1;
+```
+
+</TabItem>
+</Tabs>

@@ -1,0 +1,165 @@
+---
+id: getting-started
+title: Getting Started
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Install
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```bash
+npm install @csdb/javascript
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```bash
+pip install csdb
+```
+
+The Python package is not implemented yet. This command reserves the intended installation shape.
+
+</TabItem>
+</Tabs>
+
+## Create A Database In Memory
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import { CSDBDatabase } from "@csdb/javascript";
+
+const db = CSDBDatabase.parse(`--- csdb
+format: CSDB
+version: 1
+name: demo
+tables:
+  - notes
+
+--- table:notes:schema
+name: notes
+columns:
+  id: text
+  body: text
+required:
+  - id
+primary_key:
+  columns: [id]
+
+--- table:notes:data
+id,body
+n_001,hello
+`);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+from csdb import CSDBDatabase
+
+db = CSDBDatabase.parse("""--- csdb
+format: CSDB
+version: 1
+name: demo
+tables:
+  - notes
+
+--- table:notes:schema
+name: notes
+columns:
+  id: text
+  body: text
+required:
+  - id
+primary_key:
+  columns: [id]
+
+--- table:notes:data
+id,body
+n_001,hello
+""")
+```
+
+</TabItem>
+</Tabs>
+
+## Insert And Query Rows
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.table("notes").insert({ id: "n_002", body: "from the fluent API" });
+
+const notes = db.table("notes")
+  .where("body", "!=", null)
+  .orderBy("id")
+  .all();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.table("notes").insert({"id": "n_002", "body": "from the fluent API"})
+
+notes = (
+    db.table("notes")
+    .where("body", "!=", None)
+    .order_by("id")
+    .all()
+)
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+INSERT INTO notes (id, body)
+VALUES ('n_002', 'from SQL');
+
+SELECT *
+FROM notes
+WHERE body IS NOT NULL
+ORDER BY id ASC;
+```
+
+</TabItem>
+</Tabs>
+
+## Save A File
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import { saveCSDB } from "@csdb/javascript";
+
+await saveCSDB(db, "demo.csdb", { machineIndexes: "omit" });
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+from csdb import save_csdb
+
+save_csdb(db, "demo.csdb", machine_indexes="omit")
+```
+
+</TabItem>
+</Tabs>
+
+## What To Read Next
+
+- [Overview](./) explains the document model.
+- [Database API](./api/database) shows table creation, validation, and serialization.
+- [TableQuery API](./api/table-query) covers the fluent table API.

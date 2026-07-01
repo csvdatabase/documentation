@@ -1,0 +1,156 @@
+---
+id: intro
+title: Overview
+slug: /
+sidebar_position: 1
+---
+
+<div className="csdb-hero">
+  <p className="csdb-kicker">Comma Separated Database</p>
+  <h1>Overview</h1>
+  <p>
+    CSDB is a single-file, multi-table database format. It keeps metadata, schemas,
+    CSV rows, relationships, comments, and optional machine indexes in one
+    human-readable UTF-8 document.
+  </p>
+</div>
+
+CSDB separates a stable file format from language-specific libraries. The same
+document can be read by TypeScript, Python, command-line tools, or future runtimes
+without changing the file itself.
+
+## Document
+
+A CSDB document is one text file. It starts with database metadata, then repeats a
+schema section and a CSV data section for each table. Optional machine sections can
+appear at the bottom for faster lookup.
+
+```text
+--- csdb
+--- table:workers:schema
+--- table:workers:data
+--- table:sessions:schema
+--- table:sessions:data
+--- row_index:workers:id
+--- section_index
+--- footer
+```
+
+A section starts with a header line and continues until the next section.
+
+```text
+--- <section_name>
+section content
+```
+
+The database section must appear first. For each table, the schema section must be
+followed by that table's data section. Machine sections, when present, must come
+after all human sections.
+
+## Database
+
+The database metadata declares the format, version, database name, table order, and
+optional machine indexing settings.
+
+```yaml
+format: CSDB
+version: 1
+name: payroll
+tables:
+  - workers
+  - sessions
+```
+
+Machine indexing and comments are optional metadata fields:
+
+```yaml
+machine_indexing:
+  enabled: true
+  machine_key_width: 80
+  machine_value_width: 40
+  section_title_length: 80
+  footer_entry_count: 1
+comments:
+  database: Payroll and work-session records.
+```
+
+## Table
+
+Each table has a YAML schema and CSV rows. The schema declares columns, required
+fields, defaults, primary keys, unique constraints, foreign keys, constraints,
+indexes, computed fields, and comments.
+
+The data section is CSV. Its header must exactly match schema column order plus
+stored computed fields.
+
+```csv
+id,worker_id,start_time,end_time,hourly_pay,metadata
+s_001,w_001,2026-01-01T09:00:00Z,2026-01-01T17:00:00Z,25.00,"{""source"":""manual""}"
+s_002,w_001,2026-01-02T09:00:00Z,,25.00,"{""source"":""timer""}"
+```
+
+## Row
+
+Rows are language-native objects:
+
+- TypeScript: `Record<string, RowValue>`
+- Python: `dict[str, RowValue]`
+
+Every stored value is serialized as text in CSV. The type registry controls how
+values are decoded and encoded.
+
+An unquoted empty CSV field is `null` when the column is optional. A quoted empty
+field is an empty string.
+
+## Machine Sections
+
+Machine sections are optional fixed-width sections for fast lookup and section
+offsets. Writers can omit them for simpler diffs or emit them when
+`machine_indexing.enabled` is true.
+
+## Validation
+
+Readers and writers validate section order, names, schema references, CSV headers,
+required values, supported types, primary keys, unique constraints, check
+constraints, and foreign keys.
+
+## Query Surfaces
+
+Libraries should expose two surfaces over the same document model:
+
+- A fluent table API for direct application code.
+- A SQL subset for familiar ad hoc queries and mutations.
+
+## Current Status
+
+The TypeScript implementation supports parsing, validation, serialization, a fluent
+table API, and a compact SQL subset. The Python API shown in these docs is a
+placeholder for planned parity.
+
+Start with [Getting Started](./getting-started), then read the
+[API Reference](./api/overview).
+
+## Project Repositories
+
+<div className="csdb-grid">
+  <a className="csdb-card" href="https://github.com/csvdatabase/specs">
+    <h3>specs</h3>
+    <p>The CSDB v1 file format specification: sections, schemas, types, validation, and machine indexes.</p>
+  </a>
+  <a className="csdb-card" href="https://github.com/csvdatabase/csdb-javascript">
+    <h3>csdb-javascript</h3>
+    <p>The current TypeScript implementation with parsing, validation, serialization, fluent queries, and SQL.</p>
+  </a>
+  <a className="csdb-card" href="https://github.com/csvdatabase/csdb-python">
+    <h3>csdb-python</h3>
+    <p>The planned Python implementation for the same CSDB document model and API concepts.</p>
+  </a>
+  <a className="csdb-card" href="https://github.com/csvdatabase/documentation">
+    <h3>documentation</h3>
+    <p>This Docusaurus documentation site for language-neutral guides and API references.</p>
+  </a>
+  <a className="csdb-card" href="https://github.com/csvdatabase/website">
+    <h3>website</h3>
+    <p>The public website repository for project-level pages outside the docs app.</p>
+  </a>
+</div>

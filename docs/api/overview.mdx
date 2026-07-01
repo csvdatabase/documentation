@@ -1,0 +1,80 @@
+---
+id: overview
+title: API Overview
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Public Surface
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import {
+  CSDBDatabase,
+  openCSDB,
+  saveCSDB,
+  parseCSDB,
+  serializeCSDB,
+  parseSQL,
+  CSDBError,
+  SQLError,
+  ValidationError
+} from "@csdb/javascript";
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+from csdb import (
+    CSDBDatabase,
+    open_csdb,
+    save_csdb,
+    parse_csdb,
+    serialize_csdb,
+    parse_sql,
+    CSDBError,
+    SQLError,
+    ValidationError,
+)
+```
+
+</TabItem>
+</Tabs>
+
+## Main Objects
+
+- `CSDBDatabase` owns a parsed CSDB document and executes queries.
+- `TableQuery` is returned by `db.table(name)` and builds fluent table operations.
+- `QueryPlan` is the shared internal representation used by SQL and direct execution.
+- `Row` is a language-native key/value object for one table record.
+- `TableSchema` describes columns, keys, constraints, indexes, relationships, computed fields, and comments.
+
+## Common Flow
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const db = await openCSDB("payroll.csdb");
+db.table("workers").insert({ id: "w_001", name: "Ada", email: "ada@example.com" });
+db.validate();
+await saveCSDB(db, "payroll.csdb");
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db = open_csdb("payroll.csdb")
+db.table("workers").insert({"id": "w_001", "name": "Ada", "email": "ada@example.com"})
+db.validate()
+save_csdb(db, "payroll.csdb")
+```
+
+</TabItem>
+</Tabs>

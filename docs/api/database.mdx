@@ -1,0 +1,281 @@
+---
+id: database
+title: CSDBDatabase
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+`CSDBDatabase` wraps a parsed document and exposes table access, SQL execution, validation, and serialization.
+
+## Create Database Object
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+new CSDBDatabase(document: CSDBDocument)
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+CSDBDatabase(document: CSDBDocument)
+```
+
+</TabItem>
+</Tabs>
+
+## Parse Text
+
+Parse CSDB text into a database.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const db = CSDBDatabase.parse(text, { validate: true });
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db = CSDBDatabase.parse(text, validate=True)
+```
+
+</TabItem>
+</Tabs>
+
+## Start Table Query
+
+Start a fluent query for a table.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const query = db.table("workers");
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+query = db.table("workers")
+```
+
+</TabItem>
+</Tabs>
+
+## Query Table
+
+Query a table with the fluent API or SQL.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const rows = db.table("workers")
+  .where("email", "=", "ada@example.com")
+  .select(["id"])
+  .all();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+rows = (
+    db.table("workers")
+    .where("email", "=", "ada@example.com")
+    .select(["id"])
+    .all()
+)
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+SELECT id
+FROM workers
+WHERE email = 'ada@example.com';
+```
+
+</TabItem>
+</Tabs>
+
+Visit [TableQuery](./table-query) for the full table query API.
+
+## Query SQL
+
+Run SQL text through the database API.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const rows = db.sql(
+  "SELECT id, email FROM workers WHERE email = ?",
+  ["ada@example.com"]
+);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+rows = db.sql(
+    "SELECT id, email FROM workers WHERE email = ?",
+    ["ada@example.com"],
+)
+```
+
+</TabItem>
+</Tabs>
+
+## Execute Plan
+
+Execute a query plan directly.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const rows = db.execute({
+  kind: "select",
+  table: "workers",
+  columns: "*",
+  joins: [],
+  orderBy: [],
+  output: "objects"
+});
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+rows = db.execute({
+    "kind": "select",
+    "table": "workers",
+    "columns": "*",
+    "joins": [],
+    "order_by": [],
+    "output": "objects",
+})
+```
+
+</TabItem>
+</Tabs>
+
+## Create Table
+
+Create a table from a `TableSchema`.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.createTable({
+  name: "tags",
+  columns: { label: "text" },
+  required: ["label"],
+  primary_key: { columns: ["label"] }
+});
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.create_table({
+    "name": "tags",
+    "columns": {"label": "text"},
+    "required": ["label"],
+    "primary_key": {"columns": ["label"]},
+})
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+CREATE TABLE tags (label text primary key);
+```
+
+</TabItem>
+</Tabs>
+
+## Drop Table
+
+Drop a table by name.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.dropTable("tags");
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.drop_table("tags")
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+DROP TABLE tags;
+```
+
+</TabItem>
+</Tabs>
+
+## Validate Database
+
+Validate metadata, schema references, rows, constraints, uniqueness, and foreign keys.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.validate();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.validate()
+```
+
+</TabItem>
+</Tabs>
+
+## Serialize Database
+
+Serialize the document.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+const text = db.toString({ machineIndexes: "omit" });
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+text = db.to_string(machine_indexes="omit")
+```
+
+</TabItem>
+</Tabs>

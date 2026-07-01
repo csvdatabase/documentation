@@ -1,0 +1,150 @@
+---
+id: files
+title: Files And Serialization
+sidebar_position: 4
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Open File
+
+Open and parse a CSDB file.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import { openCSDB } from "@csdb/javascript";
+
+const db = await openCSDB("payroll.csdb");
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+from csdb import open_csdb
+
+db = open_csdb("payroll.csdb")
+```
+
+</TabItem>
+</Tabs>
+
+## Save File
+
+Serialize and save a CSDB file. The TypeScript writer uses a temporary file and rename for safer replacement.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import { saveCSDB } from "@csdb/javascript";
+
+await saveCSDB(db, "payroll.csdb", { machineIndexes: "auto" });
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+from csdb import save_csdb
+
+save_csdb(db, "payroll.csdb", machine_indexes="auto")
+```
+
+</TabItem>
+</Tabs>
+
+## Parse Text
+
+Parse text into a database.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import { parseCSDB } from "@csdb/javascript";
+
+const db = parseCSDB(text);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+from csdb import parse_csdb
+
+db = parse_csdb(text)
+```
+
+</TabItem>
+</Tabs>
+
+## Serialize Text
+
+Serialize a database to CSDB text.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import { serializeCSDB } from "@csdb/javascript";
+
+const text = serializeCSDB(db);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+from csdb import serialize_csdb
+
+text = serialize_csdb(db)
+```
+
+</TabItem>
+</Tabs>
+
+## Configure Parsing And Serialization
+
+Parsing supports validation control:
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+CSDBDatabase.parse(text, { validate: false });
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+CSDBDatabase.parse(text, validate=False)
+```
+
+</TabItem>
+</Tabs>
+
+Serialization supports machine index control:
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.toString({ machineIndexes: "omit" });
+db.toString({ machineIndexes: "auto" });
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.to_string(machine_indexes="omit")
+db.to_string(machine_indexes="auto")
+```
+
+</TabItem>
+</Tabs>

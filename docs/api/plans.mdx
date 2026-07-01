@@ -1,0 +1,93 @@
+---
+id: plans
+title: Plans
+sidebar_position: 6
+---
+
+Plans are the structured operation format executed by CSDB. Both public query
+surfaces produce plans:
+
+- The fluent table API builds plans from chained method calls.
+- SQL text is parsed into plans before execution.
+
+This keeps one execution engine behind both APIs.
+
+## Flow
+
+```text
+TableQuery API ─┐
+                ├─> QueryPlan ─> Executor ─> rows or mutation result
+SQL text     ───┘
+```
+
+## Plan Kinds
+
+```ts
+type QueryPlan =
+  | SelectPlan
+  | InsertPlan
+  | UpdatePlan
+  | DeletePlan
+  | CreateTablePlan
+  | DropTablePlan;
+```
+
+## Select Rows
+
+Produced by fluent selection methods or `SELECT`.
+
+```ts
+{
+  kind: "select",
+  table: "workers",
+  columns: ["id", "email"],
+  joins: [],
+  where: expression,
+  orderBy: [{ column: "id", direction: "asc" }],
+  limit: 10,
+  output: "objects"
+}
+```
+
+```sql
+SELECT id, email
+FROM workers
+WHERE email IS NOT NULL
+ORDER BY id ASC
+LIMIT 10
+```
+
+## Mutate Rows
+
+Produced by fluent mutation methods or `INSERT`, `UPDATE`, and `DELETE`.
+
+```ts
+{ kind: "insert", table: "workers", rows: [{ id: "w_001" }] }
+{ kind: "update", table: "workers", set: { email: "ada@example.com" }, where: expression }
+{ kind: "delete", table: "workers", where: expression }
+```
+
+```sql
+INSERT INTO workers (id, name, email) VALUES (?, ?, ?)
+UPDATE workers SET email = ? WHERE id = ?
+DELETE FROM workers WHERE id = ?
+```
+
+## Change Tables
+
+Produced by database table methods or compact DDL SQL.
+
+```ts
+{ kind: "create-table", schema }
+{ kind: "drop-table", table: "tags" }
+```
+
+```sql
+CREATE TABLE tags (label text primary key)
+DROP TABLE tags
+```
+
+## Expressions
+
+Expressions represent literals, identifiers, comparisons, `IS NULL`, `AND`, `OR`,
+and `NOT`. They are used in plan `where` fields and constraint evaluation.
