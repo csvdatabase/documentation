@@ -72,6 +72,22 @@ const config = {
           ]
         },
         {
+          title: "Specification",
+          items: [
+            { label: "File Structure", to: "/specs/docs/specification/file-structure" },
+            { label: "Database Section", to: "/specs/docs/specification/database-section" },
+            { label: "Table Schema", to: "/specs/docs/specification/table-schema" },
+            { label: "Table Data", to: "/specs/docs/specification/table-data" },
+            { label: "Row Index", to: "/specs/docs/specification/row-index" },
+            { label: "Relationships And Joins", to: "/specs/docs/specification/relationships-and-joins" },
+            { label: "Types And Values", to: "/specs/docs/specification/types-and-values" },
+            { label: "Validation", to: "/specs/docs/specification/validation" },
+            { label: "Comments", to: "/specs/docs/specification/comments" },
+            { label: "Complete Example", to: "/specs/docs/specification/complete-example" },
+            { label: "Machine Sections", to: "/specs/docs/specification/machine-sections" }
+          ]
+        },
+        {
           title: "GitHub",
           items: [
             { label: "specs", href: "https://github.com/csvdatabase/specs" },
