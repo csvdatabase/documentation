@@ -46,11 +46,7 @@ const config = {
         alt: "CSDB",
         src: "img/csdb-logo.png"
       },
-      items: [
-        { to: "/", label: "Docs", position: "left" },
-        { to: "/api/overview", label: "API", position: "left" },
-        { to: "/reference/types", label: "Reference", position: "left" }
-      ]
+      items: []
     },
     footer: {
       style: "dark",
