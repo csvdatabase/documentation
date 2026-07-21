@@ -24,6 +24,24 @@ The TypeScript runtime currently implements:
 | `json` | object, array, primitive | JSON text |
 | `custom` | string | Text with required `type_name` metadata |
 
+## Null Values
+
+All implemented column types accept `null` when the column is optional and not
+part of the primary key. Required columns and primary key columns cannot be
+`null`.
+
+- TypeScript row values include `null`.
+- Unquoted empty CSV fields decode as `null` for optional, non-primary-key
+  columns.
+- `null` serializes as an unquoted empty CSV field.
+- Quoted empty strings, written as `""`, remain empty strings and do not become
+  `null`.
+- Missing values in inserted rows are filled from defaults when a default exists;
+  otherwise they become `null` for optional, non-primary-key columns.
+- Explicit `null` values are preserved and are not replaced by defaults.
+
+SQL can use the `NULL` literal and `IS NULL` / `IS NOT NULL` predicates.
+
 ## Aliases
 
 | Alias | Canonical type |

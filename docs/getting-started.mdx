@@ -13,7 +13,7 @@ import TabItem from '@theme/TabItem';
 <TabItem value="ts" label="TypeScript">
 
 ```bash
-npm install @csdb/javascript
+npm install @csdb/typescript
 ```
 
 </TabItem>
@@ -34,7 +34,7 @@ The Python package is not implemented yet. This command reserves the intended in
 <TabItem value="ts" label="TypeScript">
 
 ```ts
-import { CSDBDatabase } from "@csdb/javascript";
+import { CSDBDatabase } from "@csdb/typescript";
 
 const db = CSDBDatabase.parse(`--- csdb
 format: CSDB
@@ -98,6 +98,7 @@ n_001,hello
 
 ```ts
 db.table("notes").insert({ id: "n_002", body: "from the fluent API" });
+db.table("notes").insert({ id: "n_003", body: null });
 
 const notes = db.table("notes")
   .where("body", "!=", null)
@@ -110,6 +111,7 @@ const notes = db.table("notes")
 
 ```py
 db.table("notes").insert({"id": "n_002", "body": "from the fluent API"})
+db.table("notes").insert({"id": "n_003", "body": None})
 
 notes = (
     db.table("notes")
@@ -126,6 +128,9 @@ notes = (
 INSERT INTO notes (id, body)
 VALUES ('n_002', 'from SQL');
 
+INSERT INTO notes (id, body)
+VALUES ('n_003', NULL);
+
 SELECT *
 FROM notes
 WHERE body IS NOT NULL
@@ -135,13 +140,16 @@ ORDER BY id ASC;
 </TabItem>
 </Tabs>
 
+Optional non-primary-key columns accept `null`. In CSV, unquoted empty fields
+represent `null`, while quoted empty strings remain empty strings.
+
 ## Save A File
 
 <Tabs groupId="language">
 <TabItem value="ts" label="TypeScript">
 
 ```ts
-import { saveCSDB } from "@csdb/javascript";
+import { saveCSDB } from "@csdb/typescript";
 
 await saveCSDB(db, "demo.csdb", { machineIndexes: "omit" });
 ```

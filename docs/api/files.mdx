@@ -15,7 +15,7 @@ Open and parse a CSDB file.
 <TabItem value="ts" label="TypeScript">
 
 ```ts
-import { openCSDB } from "@csdb/javascript";
+import { openCSDB } from "@csdb/typescript";
 
 const db = await openCSDB("payroll.csdb");
 ```
@@ -40,7 +40,7 @@ Serialize and save a CSDB file. The TypeScript writer uses a temporary file and 
 <TabItem value="ts" label="TypeScript">
 
 ```ts
-import { saveCSDB } from "@csdb/javascript";
+import { saveCSDB } from "@csdb/typescript";
 
 await saveCSDB(db, "payroll.csdb", { machineIndexes: "auto" });
 ```
@@ -65,7 +65,7 @@ Parse text into a database.
 <TabItem value="ts" label="TypeScript">
 
 ```ts
-import { parseCSDB } from "@csdb/javascript";
+import { parseCSDB } from "@csdb/typescript";
 
 const db = parseCSDB(text);
 ```
@@ -90,7 +90,7 @@ Serialize a database to CSDB text.
 <TabItem value="ts" label="TypeScript">
 
 ```ts
-import { serializeCSDB } from "@csdb/javascript";
+import { serializeCSDB } from "@csdb/typescript";
 
 const text = serializeCSDB(db);
 ```

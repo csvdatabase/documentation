@@ -19,6 +19,7 @@ Add a predicate. Calls are combined with `AND`.
 ```ts
 db.table("workers").where("id", "=", "w_001");
 db.table("workers").where({ email: "ada@example.com" });
+db.table("workers").where("email", "=", null);
 db.table("workers").where("email IS NOT NULL");
 ```
 
@@ -28,6 +29,7 @@ db.table("workers").where("email IS NOT NULL");
 ```py
 db.table("workers").where("id", "=", "w_001")
 db.table("workers").where({"email": "ada@example.com"})
+db.table("workers").where("email", "=", None)
 db.table("workers").where("email IS NOT NULL")
 ```
 
@@ -37,6 +39,7 @@ db.table("workers").where("email IS NOT NULL")
 ```sql
 SELECT * FROM workers WHERE id = 'w_001';
 SELECT * FROM workers WHERE email = 'ada@example.com';
+SELECT * FROM workers WHERE email IS NULL;
 SELECT * FROM workers WHERE email IS NOT NULL;
 ```
 
@@ -44,6 +47,7 @@ SELECT * FROM workers WHERE email IS NOT NULL;
 </Tabs>
 
 Supported comparison operators are `=`, `!=`, `<>`, `>`, `>=`, `<`, and `<=`.
+Use `IS NULL` or `IS NOT NULL` in SQL text when filtering null values.
 
 ## Select Columns
 

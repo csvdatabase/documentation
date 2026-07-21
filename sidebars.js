@@ -2,6 +2,7 @@ const sidebars = {
   docs: [
     "intro",
     "getting-started",
+    "versioning",
     "reference/types",
     "reference/validation",
     {

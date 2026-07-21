@@ -32,7 +32,9 @@ CSDB readers and writers validate both the file structure and relational model.
 ## Data
 
 - CSV headers must match schema order exactly.
+- Optional columns may contain null values unless they are part of the primary key.
 - Required columns cannot be null.
+- Primary key columns cannot be null.
 - Values must decode according to their column type.
 - Primary keys, unique constraints, and unique indexes cannot duplicate non-null values.
 - Check constraints must evaluate truthy for each row.

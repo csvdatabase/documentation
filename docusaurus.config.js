@@ -59,7 +59,7 @@ const config = {
           label: "GitHub",
           items: [
             { label: "specs", href: "https://github.com/csvdatabase/specs" },
-            { label: "csdb-javascript", href: "https://github.com/csvdatabase/csdb-javascript" },
+            { label: "csdb-typescript", href: "https://github.com/csvdatabase/csdb-typescript" },
             { label: "csdb-python", href: "https://github.com/csvdatabase/csdb-python" }
           ]
         }
@@ -73,6 +73,7 @@ const config = {
           items: [
             { label: "Overview", to: "/" },
             { label: "Getting Started", to: "/getting-started" },
+            { label: "Versioning", to: "/versioning" },
             { label: "Types", to: "/reference/types" },
             { label: "Validation", to: "/reference/validation" }
           ]
@@ -108,7 +109,7 @@ const config = {
           title: "GitHub",
           items: [
             { label: "specs", href: "https://github.com/csvdatabase/specs" },
-            { label: "csdb-javascript", href: "https://github.com/csvdatabase/csdb-javascript" },
+            { label: "csdb-typescript", href: "https://github.com/csvdatabase/csdb-typescript" },
             { label: "csdb-python", href: "https://github.com/csvdatabase/csdb-python" },
             { label: "documentation", href: "https://github.com/csvdatabase/documentation" },
             { label: "website", href: "https://github.com/csvdatabase/website" }

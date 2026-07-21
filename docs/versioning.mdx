@@ -1,0 +1,125 @@
+---
+title: Versioning
+description: How CSDB versions documentation, specs, and language implementations.
+---
+
+# Versioning
+
+CSDB docs are versioned by the **spec/API major version**, not by individual
+language package versions.
+
+## Repositories
+
+Use matching major branches across the project:
+
+```text
+documentation main  -> live, latest docs at docs.csvdatabase.net
+documentation v1    -> frozen v1 docs at v1.docs.csvdatabase.net
+documentation ...
+
+specs main          -> active spec work for the next release
+specs v1            -> frozen v1 file format and behavior contract
+specs ...
+
+csdb-typescript main -> active TypeScript implementation work
+csdb-typescript v1   -> TypeScript implementation that tracks the v1 contract
+csdb-typescript ...
+
+csdb-python main     -> active Python implementation work
+csdb-python v1       -> Python implementation that tracks the v1 contract
+csdb-python ...
+```
+
+Language packages can still publish patch and minor releases independently.
+For example, `csdb-typescript@1.6.0` and `csdb-python@1.1.0` can both belong
+to the `v1` docs if they implement the same v1 contract.
+
+## Documentation Branches
+
+Each major docs branch should pin compatible content. For example, the `v1`
+documentation branch should point its `docs/specs` submodule at the `v1` specs
+branch:
+
+```text
+documentation@v1
+  docs/specs -> specs@v1
+```
+
+The version dropdown reads `versions.json` from the live docs site. That file is
+owned by `main`, so adding a new docs version only requires updating one file in
+one place:
+
+```json
+{
+  "versions": [
+    { "label": "main", "href": "https://docs.csvdatabase.net/" },
+    { "label": "v1", "href": "https://v1.docs.csvdatabase.net/" }
+  ]
+}
+```
+
+Each entry has a label shown in the UI and an absolute URL for that docs branch.
+When a user is on `v1.docs.csvdatabase.net`, the dropdown marks `v1` as the
+current version. When a user chooses another entry, the browser navigates to the
+matching hosted docs branch.
+
+Use hostname-safe labels for domains, such as `v1.docs.csvdatabase.net` or
+`v1-0.docs.csvdatabase.net`.
+
+## Make Commands
+
+Common commands:
+
+| Command | What It Does |
+| --- | --- |
+| `make help` | Prints the available documentation commands. |
+| `make docs build` | Builds the Docusaurus site into the `build` directory. |
+| `make docs dev` | Starts the local Docusaurus development server. |
+| `make check-version VERSION=v1` | Prints the current branch for each repo and marks `Y` when it matches `v1`, or `N` when it does not. |
+| `make check-version-branch VERSION=v1` | Checks whether each repo has a local or remote branch named `v1`. |
+| `make create-version VERSION=v1 docs specification csdb-typescript csdb-python` | Creates a local `v1` branch in the selected repos. |
+
+The repo path variables are uppercase. Defaults assume the implementation repos
+live next to this documentation repo:
+
+```bash
+DOCS=.
+SPECIFICATION=../specs
+CSDB_TYPESCRIPT=../csdb-typescript
+CSDB_PYTHON=../csdb-python
+```
+
+Override paths when your checkout layout is different:
+
+```bash
+make check-version VERSION=v1 \
+  DOCS=. \
+  SPECIFICATION=/path/to/specs \
+  CSDB_TYPESCRIPT=/path/to/csdb-typescript \
+  CSDB_PYTHON=/path/to/csdb-python
+```
+
+Suggested release flow:
+
+```bash
+make check-version VERSION=v1
+make check-version-branch VERSION=v1
+make create-version VERSION=v1 docs specification csdb-typescript csdb-python
+make docs build
+```
+
+Then review the changes, update `static/versions.json` on `main`, commit, and
+push the version branch.
+
+## Hosting
+
+Deploy each docs branch to Cloudflare Pages:
+
+```text
+main -> docs.csvdatabase.net
+v1   -> v1.docs.csvdatabase.net
+v2   -> v2.docs.csvdatabase.net
+```
+
+GitHub Actions should build the Docusaurus site and deploy the generated
+`build` directory for `main` and `v*` branches.
