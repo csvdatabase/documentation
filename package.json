@@ -6,7 +6,9 @@
     "start": "docusaurus start",
     "build": "docusaurus build",
     "serve": "docusaurus serve",
-    "clear": "docusaurus clear"
+    "clear": "docusaurus clear",
+    "deploy": "npm run build && wrangler deploy",
+    "preview": "npm run build && wrangler dev"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",
@@ -19,7 +21,8 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.10.1",
-    "@docusaurus/types": "3.10.1"
+    "@docusaurus/types": "3.10.1",
+    "wrangler": "^4.112.0"
   },
   "engines": {
     "node": ">=18.0"
