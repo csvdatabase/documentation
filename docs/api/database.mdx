@@ -49,6 +49,9 @@ db = CSDBDatabase.parse(text, validate=True)
 </TabItem>
 </Tabs>
 
+JSON clients select an existing server-managed database with the request envelope's
+`database` field; they do not submit arbitrary files or server paths.
+
 ## Start Table Query
 
 Start a fluent query for a table.
@@ -70,9 +73,12 @@ query = db.table("workers")
 </TabItem>
 </Tabs>
 
+JSON commands are complete, stateless plans, so there is no remote query-builder
+object to create.
+
 ## Query Table
 
-Query a table with the fluent API or SQL.
+Query a table with the fluent API, SQL, or a structured JSON plan.
 
 <Tabs groupId="language">
 <TabItem value="ts" label="TypeScript">
@@ -106,6 +112,29 @@ WHERE email = 'ada@example.com';
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": ["id"],
+    "joins": [],
+    "where": {
+      "type": "comparison",
+      "op": "=",
+      "left": { "type": "identifier", "name": "email" },
+      "right": { "type": "literal", "value": "ada@example.com" }
+    },
+    "orderBy": [],
+    "output": "objects"
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 Visit [TableQuery](./table-query) for the full table query API.
@@ -132,6 +161,20 @@ rows = db.sql(
     "SELECT id, email FROM workers WHERE email = ?",
     ["ada@example.com"],
 )
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "sql",
+    "statement": "SELECT id, email FROM workers WHERE email = ?",
+    "params": ["ada@example.com"]
+  }
+}
 ```
 
 </TabItem>
@@ -167,6 +210,23 @@ rows = db.execute({
     "order_by": [],
     "output": "objects",
 })
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": "*",
+    "joins": [],
+    "orderBy": [],
+    "output": "objects"
+  }
+}
 ```
 
 </TabItem>
@@ -208,6 +268,24 @@ CREATE TABLE tags (label text primary key);
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "create-table",
+    "schema": {
+      "name": "tags",
+      "columns": { "label": "text" },
+      "required": ["label"],
+      "primary_key": { "columns": ["label"] }
+    }
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Drop Table
@@ -236,6 +314,16 @@ DROP TABLE tags;
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": { "kind": "drop-table", "table": "tags" }
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Validate Database
@@ -257,6 +345,16 @@ db.validate()
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": { "kind": "validate" }
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Serialize Database
@@ -275,6 +373,19 @@ const text = db.toString({ machineIndexes: "omit" });
 
 ```py
 text = db.to_string(machine_indexes="omit")
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "serialize",
+    "options": { "machineIndexes": "omit" }
+  }
+}
 ```
 
 </TabItem>

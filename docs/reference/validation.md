@@ -4,7 +4,39 @@ title: Validation
 sidebar_position: 2
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 CSDB readers and writers validate both the file structure and relational model.
+
+## Run Validation
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
+
+```ts
+db.validate();
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+db.validate()
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": { "kind": "validate" }
+}
+```
+
+</TabItem>
+</Tabs>
 
 ## Structure
 

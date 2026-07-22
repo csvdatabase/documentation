@@ -1,6 +1,6 @@
 const config = {
   title: "CSDB",
-  tagline: "Single-file relational databases for TypeScript and Python",
+  tagline: "Single-file relational databases for TypeScript, Python, SQL, and JSON",
   favicon: "img/csdb-logo.png",
 
   url: "https://csdb.dev",
@@ -58,9 +58,14 @@ const config = {
           type: "dropdown",
           label: "GitHub",
           items: [
-            { label: "specs", href: "https://github.com/csvdatabase/specs" },
+            { label: "csdb", href: "https://github.com/csvdatabase/csdb" },
+            { label: "specification", href: "https://github.com/csvdatabase/specification" },
             { label: "csdb-typescript", href: "https://github.com/csvdatabase/csdb-typescript" },
-            { label: "csdb-python", href: "https://github.com/csvdatabase/csdb-python" }
+            { label: "csdb-python", href: "https://github.com/csvdatabase/csdb-python" },
+            { label: "server-typescript", href: "https://github.com/csvdatabase/server-typescript" },
+            { label: "api-typescript", href: "https://github.com/csvdatabase/api-typescript" },
+            { label: "documentation", href: "https://github.com/csvdatabase/documentation" },
+            { label: "website", href: "https://github.com/csvdatabase/website" }
           ]
         }
       ]
@@ -79,6 +84,14 @@ const config = {
           ]
         },
         {
+          title: "Contributing",
+          items: [
+            { label: "Roadmap", to: "/contributing/roadmap" },
+            { label: "Contributing", to: "/contributing/contributing" },
+            { label: "Governance", to: "/contributing/governance" }
+          ]
+        },
+        {
           title: "API Reference",
           items: [
             { label: "API Overview", to: "/api/overview" },
@@ -90,27 +103,38 @@ const config = {
           ]
         },
         {
+          title: "CSDB Server",
+          items: [
+            { label: "Setting Up Server", to: "/server/overview" },
+            { label: "Command Requests", to: "/server/requests" },
+            { label: "Responses And Persistence", to: "/server/responses" }
+          ]
+        },
+        {
           title: "Specification",
           items: [
-            { label: "File Structure", to: "/specs/docs/specification/file-structure" },
-            { label: "Database Section", to: "/specs/docs/specification/database-section" },
-            { label: "Table Schema", to: "/specs/docs/specification/table-schema" },
-            { label: "Table Data", to: "/specs/docs/specification/table-data" },
-            { label: "Row Index", to: "/specs/docs/specification/row-index" },
-            { label: "Relationships And Joins", to: "/specs/docs/specification/relationships-and-joins" },
-            { label: "Types And Values", to: "/specs/docs/specification/types-and-values" },
-            { label: "Validation", to: "/specs/docs/specification/validation" },
-            { label: "Comments", to: "/specs/docs/specification/comments" },
-            { label: "Complete Example", to: "/specs/docs/specification/complete-example" },
-            { label: "Machine Sections", to: "/specs/docs/specification/machine-sections" }
+            { label: "File Structure", to: "/specification/docs/specification/file-structure" },
+            { label: "Database Section", to: "/specification/docs/specification/database-section" },
+            { label: "Table Schema", to: "/specification/docs/specification/table-schema" },
+            { label: "Table Data", to: "/specification/docs/specification/table-data" },
+            { label: "Row Index", to: "/specification/docs/specification/row-index" },
+            { label: "Relationships And Joins", to: "/specification/docs/specification/relationships-and-joins" },
+            { label: "Types And Values", to: "/specification/docs/specification/types-and-values" },
+            { label: "Validation", to: "/specification/docs/specification/validation" },
+            { label: "Comments", to: "/specification/docs/specification/comments" },
+            { label: "Complete Example", to: "/specification/docs/specification/complete-example" },
+            { label: "Machine Sections", to: "/specification/docs/specification/machine-sections" }
           ]
         },
         {
           title: "GitHub",
           items: [
-            { label: "specs", href: "https://github.com/csvdatabase/specs" },
+            { label: "csdb", href: "https://github.com/csvdatabase/csdb" },
+            { label: "specification", href: "https://github.com/csvdatabase/specification" },
             { label: "csdb-typescript", href: "https://github.com/csvdatabase/csdb-typescript" },
             { label: "csdb-python", href: "https://github.com/csvdatabase/csdb-python" },
+            { label: "server-typescript", href: "https://github.com/csvdatabase/server-typescript" },
+            { label: "api-typescript", href: "https://github.com/csvdatabase/api-typescript" },
             { label: "documentation", href: "https://github.com/csvdatabase/documentation" },
             { label: "website", href: "https://github.com/csvdatabase/website" }
           ]
@@ -119,7 +143,7 @@ const config = {
       copyright: `Copyright ${new Date().getFullYear()} CSDB`
     },
     prism: {
-      additionalLanguages: ["python", "typescript", "yaml", "sql"]
+      additionalLanguages: ["python", "typescript", "yaml", "sql", "json"]
     },
     colorMode: {
       defaultMode: "light",

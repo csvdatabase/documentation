@@ -32,6 +32,10 @@ db = open_csdb("payroll.csdb")
 </TabItem>
 </Tabs>
 
+JSON clients name a server-managed database in every command envelope. The server
+resolves that logical identifier inside its configured data directory and opens
+the file; clients cannot supply filesystem paths.
+
 ## Save File
 
 Serialize and save a CSDB file. The TypeScript writer uses a temporary file and rename for safer replacement.
@@ -56,6 +60,9 @@ save_csdb(db, "payroll.csdb", machine_indexes="auto")
 
 </TabItem>
 </Tabs>
+
+The JSON server automatically saves each successful mutation atomically. It does
+not expose a command that writes to a client-selected path.
 
 ## Parse Text
 
@@ -105,6 +112,18 @@ text = serialize_csdb(db)
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": { "kind": "serialize" }
+}
+```
+
+The serialized CSDB document is returned as `result.text`.
+
+</TabItem>
 </Tabs>
 
 ## Configure Parsing And Serialization
@@ -144,6 +163,19 @@ db.toString({ machineIndexes: "auto" });
 ```py
 db.to_string(machine_indexes="omit")
 db.to_string(machine_indexes="auto")
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "serialize",
+    "options": { "machineIndexes": "auto" }
+  }
+}
 ```
 
 </TabItem>

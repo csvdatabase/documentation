@@ -29,3 +29,25 @@ try {
   }
 }
 ```
+
+The CSDB server maps errors to HTTP status codes and a stable response body. It
+never returns a TypeScript stack trace to the client.
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Required column \"id\" cannot be null."
+  },
+  "requestId": "req_01J..."
+}
+```
+
+| Error | HTTP status | JSON code |
+| --- | --- | --- |
+| Malformed JSON or command envelope | `400` | `INVALID_REQUEST` |
+| Unknown database or table | `404` | `NOT_FOUND` |
+| `SQLError` | `422` | `SQL_ERROR` |
+| `ValidationError` | `422` | `VALIDATION_ERROR` |
+| Unexpected server failure | `500` | `INTERNAL_ERROR` |

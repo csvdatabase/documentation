@@ -1,0 +1,88 @@
+---
+id: requests
+title: Command Requests
+sidebar_position: 2
+---
+
+# Command Requests
+
+Server requests use a command envelope:
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": ["id", "email"],
+    "joins": [],
+    "where": {
+      "type": "is-null",
+      "expr": { "type": "identifier", "name": "email" },
+      "not": true
+    },
+    "orderBy": [{ "column": "id", "direction": "asc" }],
+    "output": "objects"
+  }
+}
+```
+
+## Envelope
+
+| Field | Meaning |
+| --- | --- |
+| `database` | Logical database name resolved by the server. |
+| `command` | One database, table, SQL, or query-plan command. |
+| `command.kind` | The operation name. |
+
+The command body follows the same shape as the related TypeScript API or query
+plan. For example, a select command uses select-plan fields; an insert command
+uses insert-plan fields; a SQL command uses SQL statement and params fields.
+
+## SQL Command
+
+Use SQL when text is more convenient than a structured plan:
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "sql",
+    "statement": "SELECT id, email FROM workers WHERE email = ?",
+    "params": ["ada@example.com"]
+  }
+}
+```
+
+## Expression Trees
+
+Structured `select`, `update`, and `delete` commands represent predicates as JSON
+expression trees. This example means `email IS NOT NULL AND id != 'w_999'`:
+
+```json
+{
+  "type": "and",
+  "left": {
+    "type": "is-null",
+    "expr": { "type": "identifier", "name": "email" },
+    "not": true
+  },
+  "right": {
+    "type": "comparison",
+    "op": "!=",
+    "left": { "type": "identifier", "name": "id" },
+    "right": { "type": "literal", "value": "w_999" }
+  }
+}
+```
+
+Supported expression nodes are `literal`, `identifier`, `comparison`, `is-null`,
+`and`, `or`, and `not`. Supported comparison operators are `=`, `!=`, `<>`, `>`,
+`>=`, `<`, and `<=`.
+
+## JSON Values
+
+Request bodies use ordinary JSON values. `bigint` and exact `numeric` values use
+decimal strings so they are not rounded by JSON parsers. Dates and timestamps
+use their CSDB string forms. JSON-typed columns contain normal nested JSON
+values. See [Types](../reference/types) for the complete mapping.

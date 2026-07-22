@@ -44,6 +44,37 @@ SELECT * FROM workers WHERE email IS NOT NULL;
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": "*",
+    "joins": [],
+    "where": {
+      "type": "and",
+      "left": {
+        "type": "comparison",
+        "op": "=",
+        "left": { "type": "identifier", "name": "id" },
+        "right": { "type": "literal", "value": "w_001" }
+      },
+      "right": {
+        "type": "is-null",
+        "expr": { "type": "identifier", "name": "email" },
+        "not": true
+      }
+    },
+    "orderBy": [],
+    "output": "objects"
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 Supported comparison operators are `=`, `!=`, `<>`, `>`, `>=`, `<`, and `<=`.
@@ -78,6 +109,23 @@ SELECT * FROM workers;
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": ["id", "email"],
+    "joins": [],
+    "orderBy": [],
+    "output": "objects"
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Join Tables
@@ -105,6 +153,23 @@ db.table("sessions").join("worker").all()
 SELECT sessions.*, workers.*
 FROM sessions
 JOIN workers ON sessions.worker_id = workers.id;
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "sessions",
+    "columns": "*",
+    "joins": [{ "table": "worker", "relationship": "worker" }],
+    "orderBy": [],
+    "output": "objects"
+  }
+}
 ```
 
 </TabItem>
@@ -138,6 +203,23 @@ ORDER BY id DESC;
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": "*",
+    "joins": [],
+    "orderBy": [{ "column": "id", "direction": "desc" }],
+    "output": "objects"
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Limit Rows
@@ -165,6 +247,24 @@ db.table("workers").limit(10).all()
 SELECT *
 FROM workers
 LIMIT 10;
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": "*",
+    "joins": [],
+    "orderBy": [],
+    "limit": 10,
+    "output": "objects"
+  }
+}
 ```
 
 </TabItem>
@@ -196,6 +296,23 @@ SELECT * FROM workers;
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": "*",
+    "joins": [],
+    "orderBy": [],
+    "output": "objects"
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Read First Row
@@ -224,6 +341,30 @@ SELECT *
 FROM workers
 WHERE id = 'w_001'
 LIMIT 1;
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": "*",
+    "joins": [],
+    "where": {
+      "type": "comparison",
+      "op": "=",
+      "left": { "type": "identifier", "name": "id" },
+      "right": { "type": "literal", "value": "w_001" }
+    },
+    "orderBy": [],
+    "limit": 1,
+    "output": "objects"
+  }
+}
 ```
 
 </TabItem>
@@ -265,6 +406,23 @@ VALUES ('w_002', 'Grace', 'grace@example.com');
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "insert",
+    "table": "workers",
+    "rows": [
+      { "id": "w_001", "name": "Ada", "email": "ada@example.com" },
+      { "id": "w_002", "name": "Grace", "email": "grace@example.com" }
+    ]
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Update Rows
@@ -295,6 +453,26 @@ WHERE id = 'w_001';
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "update",
+    "table": "workers",
+    "set": { "email": "ada@csdb.dev" },
+    "where": {
+      "type": "comparison",
+      "op": "=",
+      "left": { "type": "identifier", "name": "id" },
+      "right": { "type": "literal", "value": "w_001" }
+    }
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Delete Rows
@@ -321,6 +499,25 @@ db.table("workers").where("id", "=", "w_001").delete()
 ```sql
 DELETE FROM workers
 WHERE id = 'w_001';
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "delete",
+    "table": "workers",
+    "where": {
+      "type": "comparison",
+      "op": "=",
+      "left": { "type": "identifier", "name": "id" },
+      "right": { "type": "literal", "value": "w_001" }
+    }
+  }
+}
 ```
 
 </TabItem>
@@ -359,6 +556,31 @@ SELECT *
 FROM invoice_lines
 WHERE invoice_id = 'inv_001' AND id = 'line_1'
 LIMIT 1;
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "by-primary-key",
+    "table": "workers",
+    "key": "w_001"
+  }
+}
+```
+
+```json
+{
+  "database": "billing",
+  "command": {
+    "kind": "by-primary-key",
+    "table": "invoice_lines",
+    "key": ["inv_001", "line_1"]
+  }
+}
 ```
 
 </TabItem>

@@ -3,14 +3,14 @@ SHELL := /bin/bash
 
 VERSION ?=
 DOCS ?= .
-SPECIFICATION ?= ../specs
+SPECIFICATION ?= ../specification
 CSDB_TYPESCRIPT ?= ../csdb-typescript
 CSDB_PYTHON ?= ../csdb-python
 
 REPO_TARGETS := docs specification csdb-typescript csdb-python
 SELECTED_REPOS := $(filter $(REPO_TARGETS),$(MAKECMDGOALS))
 
-.PHONY: help docs build dev serve check-version check-version-branch create-version require-version require-selected-repos $(REPO_TARGETS)
+.PHONY: help docs cloudflare build dev serve domain version-domain check-version check-version-branch create-version require-version require-selected-repos $(REPO_TARGETS)
 
 help:
 	@echo "CSDB documentation commands"
@@ -26,6 +26,9 @@ help:
 	@echo "Version creation:"
 	@echo "  make create-version VERSION=v1 docs specification csdb-typescript csdb-python"
 	@echo ""
+	@echo "Cloudflare:"
+	@echo "  make cloudflare domain VERSION=v1"
+	@echo ""
 	@echo "Path variables:"
 	@echo "  DOCS=$(DOCS)"
 	@echo "  SPECIFICATION=$(SPECIFICATION)"
@@ -40,6 +43,14 @@ dev:
 
 serve:
 	npm run serve
+
+cloudflare:
+	@:
+
+domain: require-version
+	scripts/cloudflare-docs-version-domain.sh "$(VERSION)"
+
+version-domain: domain
 
 require-version:
 	@test -n "$(VERSION)" || { echo "Set VERSION, for example: make check-version VERSION=v1"; exit 1; }

@@ -44,6 +44,28 @@ from csdb import (
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```http
+POST /v1/commands
+Content-Type: application/json
+```
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": "*",
+    "joins": [],
+    "orderBy": [],
+    "output": "objects"
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Main Objects
@@ -53,6 +75,7 @@ from csdb import (
 - `QueryPlan` is the shared internal representation used by SQL and direct execution.
 - `Row` is a language-native key/value object for one table record.
 - `TableSchema` describes columns, keys, constraints, indexes, relationships, computed fields, and comments.
+- A JSON command envelope names a server-managed database and carries a query plan or database operation.
 
 ## Common Flow
 
@@ -77,4 +100,26 @@ save_csdb(db, "payroll.csdb")
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "insert",
+    "table": "workers",
+    "rows": [
+      { "id": "w_001", "name": "Ada", "email": "ada@example.com" }
+    ]
+  }
+}
+```
+
+The server validates and atomically persists a successful mutation before it
+returns the response.
+
+</TabItem>
 </Tabs>
+
+See [CSDB Server](../server/overview) for the endpoint envelope, response
+shapes, expression trees, and persistence behavior.

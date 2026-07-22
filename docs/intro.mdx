@@ -17,8 +17,8 @@ sidebar_position: 1
 </div>
 
 CSDB separates a stable file format from language-specific libraries. The same
-document can be read by TypeScript, Python, command-line tools, or future runtimes
-without changing the file itself.
+document can be read by TypeScript, Python, SQL tools, or a JSON server without
+changing the file itself.
 
 ## Document
 
@@ -96,6 +96,7 @@ Rows are language-native objects:
 
 - TypeScript: `Record<string, RowValue>`
 - Python: `dict[str, RowValue]`
+- JSON: an object whose property values follow the JSON wire mapping
 
 Every stored value is serialized as text in CSV. The type registry controls how
 values are decoded and encoded.
@@ -117,16 +118,17 @@ constraints, and foreign keys.
 
 ## Query Surfaces
 
-Libraries should expose two surfaces over the same document model:
+CSDB exposes several surfaces over the same document model:
 
 - A fluent table API for direct application code.
 - A SQL subset for familiar ad hoc queries and mutations.
+- JSON commands that bridge HTTP clients to the same TypeScript query plans.
 
-## Current Status
+## Implementation Surfaces
 
-The TypeScript implementation supports parsing, validation, serialization, a fluent
-table API, and a compact SQL subset. The Python API shown in these docs is a
-placeholder for planned parity.
+The TypeScript and Python libraries expose the same CSDB document model with
+language-native APIs. The TypeScript server exposes JSON commands for HTTP
+clients and uses the same query-plan shapes as the library APIs.
 
 Start with [Getting Started](./getting-started), then read the
 [API Reference](./api/overview).
@@ -134,17 +136,29 @@ Start with [Getting Started](./getting-started), then read the
 ## Project Repositories
 
 <div className="csdb-grid">
-  <a className="csdb-card" href="https://github.com/csvdatabase/specs">
-    <h3>specs</h3>
-    <p>The CSDB v1 file format specification: sections, schemas, types, validation, and machine indexes.</p>
+  <a className="csdb-card" href="https://github.com/csvdatabase/csdb">
+    <h3>csdb</h3>
+    <p>The main project repository for overview, roadmap, contribution, governance, and community coordination.</p>
+  </a>
+  <a className="csdb-card" href="https://github.com/csvdatabase/specification">
+    <h3>specification</h3>
+    <p>The CSDB file format specification: sections, schemas, types, validation, and machine indexes.</p>
   </a>
   <a className="csdb-card" href="https://github.com/csvdatabase/csdb-typescript">
     <h3>csdb-typescript</h3>
-    <p>The current TypeScript implementation with parsing, validation, serialization, fluent queries, and SQL.</p>
+    <p>The TypeScript implementation with parsing, validation, serialization, fluent queries, and SQL.</p>
   </a>
   <a className="csdb-card" href="https://github.com/csvdatabase/csdb-python">
     <h3>csdb-python</h3>
-    <p>The planned Python implementation for the same CSDB document model and API concepts.</p>
+    <p>The Python implementation for the same CSDB document model and API concepts.</p>
+  </a>
+  <a className="csdb-card" href="https://github.com/csvdatabase/server-typescript">
+    <h3>server-typescript</h3>
+    <p>The Docker-deployable JSON bridge over the TypeScript implementation.</p>
+  </a>
+  <a className="csdb-card" href="https://github.com/csvdatabase/api-typescript">
+    <h3>api-typescript</h3>
+    <p>The TypeScript SDK client for applications that call the CSDB JSON server.</p>
   </a>
   <a className="csdb-card" href="https://github.com/csvdatabase/documentation">
     <h3>documentation</h3>

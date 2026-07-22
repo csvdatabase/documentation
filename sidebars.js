@@ -3,12 +3,22 @@ const sidebars = {
     "intro",
     "getting-started",
     "versioning",
+    {
+      type: "category",
+      label: "Contributing",
+      collapsed: true,
+      items: [
+        "contributing/contributing/roadmap",
+        "contributing/contributing/contributing",
+        "contributing/contributing/governance"
+      ]
+    },
     "reference/types",
     "reference/validation",
     {
       type: "category",
       label: "API Reference",
-      collapsed: false,
+      collapsed: true,
       items: [
         "api/overview",
         "api/database",
@@ -20,20 +30,30 @@ const sidebars = {
     },
     {
       type: "category",
-      label: "Specification",
-      collapsed: false,
+      label: "CSDB Server",
+      collapsed: true,
       items: [
-        "specs/docs/specification/file-structure",
-        "specs/docs/specification/database-section",
-        "specs/docs/specification/table-schema",
-        "specs/docs/specification/table-data",
-        "specs/docs/specification/row-index",
-        "specs/docs/specification/relationships-and-joins",
-        "specs/docs/specification/types-and-values",
-        "specs/docs/specification/validation",
-        "specs/docs/specification/comments",
-        "specs/docs/specification/complete-example",
-        "specs/docs/specification/machine-sections"
+        "server/overview",
+        "server/requests",
+        "server/responses"
+      ]
+    },
+    {
+      type: "category",
+      label: "Specification",
+      collapsed: true,
+      items: [
+        "specification/docs/specification/file-structure",
+        "specification/docs/specification/database-section",
+        "specification/docs/specification/table-schema",
+        "specification/docs/specification/table-data",
+        "specification/docs/specification/row-index",
+        "specification/docs/specification/relationships-and-joins",
+        "specification/docs/specification/types-and-values",
+        "specification/docs/specification/validation",
+        "specification/docs/specification/comments",
+        "specification/docs/specification/complete-example",
+        "specification/docs/specification/machine-sections"
       ]
     }
   ]

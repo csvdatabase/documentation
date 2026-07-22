@@ -1,12 +1,12 @@
 ---
 title: Versioning
-description: How CSDB versions documentation, specs, and language implementations.
+description: How CSDB versions documentation, specification, and language implementations.
 ---
 
 # Versioning
 
-CSDB docs are versioned by the **spec/API major version**, not by individual
-language package versions.
+CSDB docs are versioned by the **specification/API major version**, not by
+individual language package versions.
 
 ## Repositories
 
@@ -17,9 +17,9 @@ documentation main  -> live, latest docs at docs.csvdatabase.net
 documentation v1    -> frozen v1 docs at v1.docs.csvdatabase.net
 documentation ...
 
-specs main          -> active spec work for the next release
-specs v1            -> frozen v1 file format and behavior contract
-specs ...
+specification main -> active specification work for the next release
+specification v1   -> frozen v1 file format and behavior contract
+specification ...
 
 csdb-typescript main -> active TypeScript implementation work
 csdb-typescript v1   -> TypeScript implementation that tracks the v1 contract
@@ -37,12 +37,12 @@ to the `v1` docs if they implement the same v1 contract.
 ## Documentation Branches
 
 Each major docs branch should pin compatible content. For example, the `v1`
-documentation branch should point its `docs/specs` submodule at the `v1` specs
-branch:
+documentation branch should point its specification submodule at the `v1`
+specification branch:
 
 ```text
 documentation@v1
-  docs/specs -> specs@v1
+  docs/specification -> specification@v1
 ```
 
 The version dropdown reads `versions.json` from the live docs site. That file is
@@ -78,13 +78,14 @@ Common commands:
 | `make check-version VERSION=v1` | Prints the current branch for each repo and marks `Y` when it matches `v1`, or `N` when it does not. |
 | `make check-version-branch VERSION=v1` | Checks whether each repo has a local or remote branch named `v1`. |
 | `make create-version VERSION=v1 docs specification csdb-typescript csdb-python` | Creates a local `v1` branch in the selected repos. |
+| `make cloudflare domain VERSION=v1` | Adds `v1.docs.csvdatabase.net` to the Pages project and creates or updates its proxied DNS CNAME. |
 
 The repo path variables are uppercase. Defaults assume the implementation repos
 live next to this documentation repo:
 
 ```bash
 DOCS=.
-SPECIFICATION=../specs
+SPECIFICATION=../specification
 CSDB_TYPESCRIPT=../csdb-typescript
 CSDB_PYTHON=../csdb-python
 ```
@@ -94,7 +95,7 @@ Override paths when your checkout layout is different:
 ```bash
 make check-version VERSION=v1 \
   DOCS=. \
-  SPECIFICATION=/path/to/specs \
+  SPECIFICATION=/path/to/specification \
   CSDB_TYPESCRIPT=/path/to/csdb-typescript \
   CSDB_PYTHON=/path/to/csdb-python
 ```
@@ -123,3 +124,32 @@ v2   -> v2.docs.csvdatabase.net
 
 GitHub Actions should build the Docusaurus site and deploy the generated
 `build` directory for `main` and `v*` branches.
+
+### Automating Version Domains
+
+Cloudflare Pages does not support wildcard custom domains, so each version
+hostname must be registered explicitly. Use the Makefile so the API calls stay
+in one shell script:
+
+```bash
+make cloudflare domain VERSION=v1
+```
+
+Required environment variables:
+
+```bash
+CLOUDFLARE_API_TOKEN=...
+CLOUDFLARE_ACCOUNT_ID=...
+CLOUDFLARE_ZONE_ID=...
+CLOUDFLARE_PAGES_PROJECT=...
+DOCS_DOMAIN=docs.csvdatabase.net
+```
+
+The script:
+
+```text
+adds Pages custom domain: <version>.docs.csvdatabase.net
+creates/updates DNS CNAME: <version>.docs.csvdatabase.net -> <version>.<pages-project>.pages.dev
+```
+
+Run it after Cloudflare has successfully built the version branch at least once.

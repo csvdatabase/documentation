@@ -23,8 +23,6 @@ npm install @csdb/typescript
 pip install csdb
 ```
 
-The Python package is not implemented yet. This command reserves the intended installation shape.
-
 </TabItem>
 </Tabs>
 
@@ -138,6 +136,52 @@ ORDER BY id ASC;
 ```
 
 </TabItem>
+<TabItem value="json" label="JSON">
+
+Send each object below as a separate `POST /v1/commands` request:
+
+```json
+{
+  "database": "demo",
+  "command": {
+    "kind": "insert",
+    "table": "notes",
+    "rows": [{ "id": "n_002", "body": "from JSON" }]
+  }
+}
+```
+
+```json
+{
+  "database": "demo",
+  "command": {
+    "kind": "insert",
+    "table": "notes",
+    "rows": [{ "id": "n_003", "body": null }]
+  }
+}
+```
+
+```json
+{
+  "database": "demo",
+  "command": {
+    "kind": "select",
+    "table": "notes",
+    "columns": "*",
+    "joins": [],
+    "where": {
+      "type": "is-null",
+      "expr": { "type": "identifier", "name": "body" },
+      "not": true
+    },
+    "orderBy": [{ "column": "id", "direction": "asc" }],
+    "output": "objects"
+  }
+}
+```
+
+</TabItem>
 </Tabs>
 
 Optional non-primary-key columns accept `null`. In CSV, unquoted empty fields
@@ -166,8 +210,12 @@ save_csdb(db, "demo.csdb", machine_indexes="omit")
 </TabItem>
 </Tabs>
 
+The JSON server does not accept save paths. It resolves `database` inside its
+configured data directory and automatically persists successful mutations.
+
 ## What To Read Next
 
 - [Overview](./) explains the document model.
 - [Database API](./api/database) shows table creation, validation, and serialization.
 - [TableQuery API](./api/table-query) covers the fluent table API.
+- [CSDB Server](./server/overview) defines the server command and response contract.

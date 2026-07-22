@@ -1,0 +1,107 @@
+---
+id: overview
+title: Setting Up Server
+sidebar_position: 1
+---
+
+# Setting Up Server
+
+The CSDB server is a Docker-deployable HTTP service for `.csdb` databases. It
+mounts a data directory, opens server-managed CSDB files from that directory,
+and exposes JSON commands over HTTP.
+
+## Docker Compose
+
+Use Docker Compose from the `server-typescript` repository:
+
+```bash
+cp .env.example .env
+mkdir -p data
+cp examples/payroll.csdb data/payroll.csdb
+docker compose up --build
+```
+
+The default address is:
+
+```text
+http://127.0.0.1:3000
+```
+
+The Compose file:
+
+- builds the server image from the repository `Dockerfile`
+- runs the Node.js app in a container
+- mounts the host `./data` directory at `/data`
+- binds to localhost by default
+- runs the container read-only except for mounted data and temporary storage
+
+## Data Directory
+
+Each database is addressed by logical name. For example, this request:
+
+```json
+{
+  "database": "payroll",
+  "command": { "kind": "validate" }
+}
+```
+
+maps to:
+
+```text
+data/payroll.csdb
+```
+
+Clients do not send filesystem paths. The server resolves database names inside
+its configured data directory and prevents path traversal.
+
+## Configuration
+
+The `.env` file controls the local Docker Compose deployment:
+
+| Variable | Purpose |
+| --- | --- |
+| `CSDB_BIND_ADDRESS` | Host interface for the published port. Defaults to `127.0.0.1`. |
+| `CSDB_PORT` | Host port mapped to container port `3000`. |
+| `CSDB_DATA_PATH` | Host directory mounted into the container as `/data`. |
+| `CSDB_API_KEY` | Optional bearer token required for requests. |
+| `CSDB_MAX_BODY_BYTES` | Maximum JSON request body size. |
+| `CSDB_SHUTDOWN_TIMEOUT_MS` | Graceful shutdown timeout. |
+| `CSDB_UID`, `CSDB_GID` | Container user and group IDs for mounted data access. |
+
+Set a long random `CSDB_API_KEY` before exposing the service outside localhost.
+
+## HTTP Surface
+
+The main command endpoint is:
+
+```http
+POST /v1/commands
+Content-Type: application/json
+```
+
+Server commands mirror the TypeScript API as JSON:
+
+- Database operations map to `CSDBDatabase` actions.
+- Table operations map to `TableQuery` and table mutation actions.
+- SQL commands map to `db.sql(statement, params)`.
+- Query-plan commands use the same field names as TypeScript plans.
+
+Command-specific examples live with the related API pages:
+
+- [CSDBDatabase](../api/database)
+- [TableQuery](../api/table-query)
+- [Files And Serialization](../api/files)
+- [Plans](../api/plans)
+
+## Health Check
+
+Use the health endpoint to verify the container is running:
+
+```http
+GET /health
+```
+
+```json
+{ "status": "ok" }
+```

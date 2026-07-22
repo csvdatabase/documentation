@@ -1,3 +1,6 @@
-[submodule "specs"]
-	path = docs/specs
-	url = https://github.com/csvdatabase/specs.git
+[submodule "specification"]
+	path = docs/specification
+	url = https://github.com/csvdatabase/specification.git
+[submodule "contributing"]
+	path = docs/contributing
+	url = https://github.com/csvdatabase/csdb.git

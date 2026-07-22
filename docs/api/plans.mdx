@@ -4,20 +4,22 @@ title: Plans
 sidebar_position: 6
 ---
 
-Plans are the structured operation format executed by CSDB. Both public query
-surfaces produce plans:
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Plans are the structured operation format executed by CSDB. All public query
+surfaces converge on the same executor:
 
 - The fluent table API builds plans from chained method calls.
 - SQL text is parsed into plans before execution.
-
-This keeps one execution engine behind both APIs.
+- JSON sends plans directly inside a server command envelope.
 
 ## Flow
 
 ```text
 TableQuery API ─┐
-                ├─> QueryPlan ─> Executor ─> rows or mutation result
-SQL text     ───┘
+SQL text     ───┼─> QueryPlan ─> Executor ─> rows or mutation result
+JSON command ───┘
 ```
 
 ## Plan Kinds
@@ -34,7 +36,10 @@ type QueryPlan =
 
 ## Select Rows
 
-Produced by fluent selection methods or `SELECT`.
+Produced by fluent selection methods, `SELECT`, or a JSON `select` command.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
 
 ```ts
 {
@@ -42,24 +47,80 @@ Produced by fluent selection methods or `SELECT`.
   table: "workers",
   columns: ["id", "email"],
   joins: [],
-  where: expression,
+  where: {
+    type: "is-null",
+    expr: { type: "identifier", name: "email" },
+    not: true
+  },
   orderBy: [{ column: "id", direction: "asc" }],
   limit: 10,
   output: "objects"
 }
 ```
 
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+{
+    "kind": "select",
+    "table": "workers",
+    "columns": ["id", "email"],
+    "joins": [],
+    "where": {
+        "type": "is-null",
+        "expr": {"type": "identifier", "name": "email"},
+        "not": True,
+    },
+    "order_by": [{"column": "id", "direction": "asc"}],
+    "limit": 10,
+    "output": "objects",
+}
+```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
 ```sql
 SELECT id, email
 FROM workers
 WHERE email IS NOT NULL
 ORDER BY id ASC
-LIMIT 10
+LIMIT 10;
 ```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "select",
+    "table": "workers",
+    "columns": ["id", "email"],
+    "joins": [],
+    "where": {
+      "type": "is-null",
+      "expr": { "type": "identifier", "name": "email" },
+      "not": true
+    },
+    "orderBy": [{ "column": "id", "direction": "asc" }],
+    "limit": 10,
+    "output": "objects"
+  }
+}
+```
+
+</TabItem>
+</Tabs>
 
 ## Mutate Rows
 
-Produced by fluent mutation methods or `INSERT`, `UPDATE`, and `DELETE`.
+Produced by fluent mutation methods, SQL, or JSON mutation commands.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
 
 ```ts
 { kind: "insert", table: "workers", rows: [{ id: "w_001" }] }
@@ -67,27 +128,135 @@ Produced by fluent mutation methods or `INSERT`, `UPDATE`, and `DELETE`.
 { kind: "delete", table: "workers", where: expression }
 ```
 
-```sql
-INSERT INTO workers (id, name, email) VALUES (?, ?, ?)
-UPDATE workers SET email = ? WHERE id = ?
-DELETE FROM workers WHERE id = ?
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+{"kind": "insert", "table": "workers", "rows": [{"id": "w_001"}]}
+{"kind": "update", "table": "workers", "set": {"email": "ada@example.com"}, "where": expression}
+{"kind": "delete", "table": "workers", "where": expression}
 ```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+INSERT INTO workers (id, name, email) VALUES (?, ?, ?);
+UPDATE workers SET email = ? WHERE id = ?;
+DELETE FROM workers WHERE id = ?;
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+Each object is the body of a separate `POST /v1/commands` request.
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "insert",
+    "table": "workers",
+    "rows": [{ "id": "w_001" }]
+  }
+}
+```
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "update",
+    "table": "workers",
+    "set": { "email": "ada@example.com" },
+    "where": {
+      "type": "comparison",
+      "op": "=",
+      "left": { "type": "identifier", "name": "id" },
+      "right": { "type": "literal", "value": "w_001" }
+    }
+  }
+}
+```
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "delete",
+    "table": "workers",
+    "where": {
+      "type": "comparison",
+      "op": "=",
+      "left": { "type": "identifier", "name": "id" },
+      "right": { "type": "literal", "value": "w_001" }
+    }
+  }
+}
+```
+
+</TabItem>
+</Tabs>
 
 ## Change Tables
 
-Produced by database table methods or compact DDL SQL.
+Produced by database table methods, compact DDL SQL, or JSON DDL commands.
+
+<Tabs groupId="language">
+<TabItem value="ts" label="TypeScript">
 
 ```ts
 { kind: "create-table", schema }
 { kind: "drop-table", table: "tags" }
 ```
 
-```sql
-CREATE TABLE tags (label text primary key)
-DROP TABLE tags
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+{"kind": "create-table", "schema": schema}
+{"kind": "drop-table", "table": "tags"}
 ```
+
+</TabItem>
+<TabItem value="sql" label="SQL">
+
+```sql
+CREATE TABLE tags (label text primary key);
+DROP TABLE tags;
+```
+
+</TabItem>
+<TabItem value="json" label="JSON">
+
+```json
+{
+  "database": "payroll",
+  "command": {
+    "kind": "create-table",
+    "schema": {
+      "name": "tags",
+      "columns": { "label": "text" },
+      "required": ["label"],
+      "primary_key": { "columns": ["label"] }
+    }
+  }
+}
+```
+
+```json
+{
+  "database": "payroll",
+  "command": { "kind": "drop-table", "table": "tags" }
+}
+```
+
+</TabItem>
+</Tabs>
 
 ## Expressions
 
 Expressions represent literals, identifiers, comparisons, `IS NULL`, `AND`, `OR`,
-and `NOT`. They are used in plan `where` fields and constraint evaluation.
+and `NOT`. They are used in plan `where` fields and constraint evaluation. JSON
+uses the exact discriminated expression objects documented in
+[Command Requests](../server/requests#expression-trees).

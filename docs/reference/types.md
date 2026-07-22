@@ -8,7 +8,7 @@ CSDB values are stored as CSV text and decoded according to the column type.
 
 ## Implemented Types
 
-The TypeScript runtime currently implements:
+The TypeScript runtime implements:
 
 | Type | Runtime value | Serialized form |
 | --- | --- | --- |
@@ -42,6 +42,27 @@ part of the primary key. Required columns and primary key columns cannot be
 
 SQL can use the `NULL` literal and `IS NULL` / `IS NOT NULL` predicates.
 
+JSON request and response bodies use JSON `null` for CSDB null values.
+
+## JSON Wire Values
+
+The TypeScript server converts runtime values to lossless JSON values:
+
+| CSDB type | JSON value |
+| --- | --- |
+| `text`, `varchar`, `custom` | string |
+| `integer`, finite `real` | number |
+| `bigint` | decimal string |
+| `numeric` | decimal string |
+| `boolean` | boolean |
+| `date`, `timestamp` | string |
+| `json` | the stored JSON object, array, primitive, or null |
+
+`bigint` and `numeric` use strings because JSON numbers cannot preserve every
+integer or exact decimal. If a `real` column explicitly permits `NaN` or infinity,
+the JSON bridge returns `"NaN"`, `"Infinity"`, or `"-Infinity"` rather than an
+invalid JSON number.
+
 ## Aliases
 
 | Alias | Canonical type |
@@ -70,6 +91,6 @@ columns:
     type_name: geography_point
 ```
 
-## Future Registry
+## Specification Type Registry
 
-The CSDB v1 specification also names future types such as `char`, `smallint`, `double`, `time`, `uuid`, `binary`, `jsonb`, `array`, `enum`, `xml`, geometric types, network types, range types, `any`, and engine-specific `custom` types.
+The specification also names types such as `char`, `smallint`, `double`, `time`, `uuid`, `binary`, `jsonb`, `array`, `enum`, `xml`, geometric types, network types, range types, `any`, and engine-specific `custom` types.

@@ -1,0 +1,65 @@
+---
+id: responses
+title: Responses And Persistence
+sidebar_position: 3
+---
+
+# Responses And Persistence
+
+Successful requests return one stable wrapper:
+
+```json
+{
+  "ok": true,
+  "result": {
+    "rows": [
+      { "id": "w_001", "email": "ada@example.com" }
+    ]
+  }
+}
+```
+
+Mutations return operation-specific results such as affected row counts:
+
+```json
+{
+  "ok": true,
+  "result": { "rowsAffected": 1 }
+}
+```
+
+## Errors
+
+Errors use one JSON shape:
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Required column \"id\" cannot be null."
+  },
+  "requestId": "req_01J..."
+}
+```
+
+Common status mappings:
+
+| Error | HTTP status | JSON code |
+| --- | --- | --- |
+| Malformed JSON or command envelope | `400` | `INVALID_REQUEST` |
+| Unknown database or table | `404` | `NOT_FOUND` |
+| SQL error | `422` | `SQL_ERROR` |
+| Validation error | `422` | `VALIDATION_ERROR` |
+| Unexpected server failure | `500` | `INTERNAL_ERROR` |
+
+## Persistence
+
+The server opens databases with automatic persistence enabled. Every successful
+mutation is validated and saved atomically before the response is returned. A
+failed mutation is rolled back and does not modify the `.csdb` file. Read
+commands never write the file.
+
+The server serializes commands for the same database so concurrent requests
+cannot overwrite one another. Commands for different databases may run in
+parallel.
