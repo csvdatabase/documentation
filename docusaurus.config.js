@@ -48,6 +48,13 @@ const config = {
       },
       items: [
         {
+          type: "html",
+          position: "right",
+          className: "github-star-navbar-item",
+          value:
+            '<span class="github-star-navbar"><iframe src="https://ghbtns.com/github-btn.html?user=csvdatabase&repo=csdb&type=star&count=true" frameborder="0" scrolling="0" width="110" height="20" title="Star csvdatabase/csdb on GitHub"></iframe></span>'
+        },
+        {
           type: "custom-versionRegistry",
           label: "Version",
           position: "right",

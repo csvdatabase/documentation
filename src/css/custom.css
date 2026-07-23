@@ -113,6 +113,24 @@
   width: 1.1rem;
 }
 
+.github-star-navbar-item {
+  align-items: center;
+  display: inline-flex;
+  margin-right: -0.35rem;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.github-star-navbar {
+  align-items: center;
+  display: inline-flex;
+  height: 2rem;
+}
+
+.github-star-navbar iframe {
+  display: block;
+}
+
 .version-registry__mobile-trigger {
   font: inherit;
   text-align: left;
