@@ -36,14 +36,8 @@ to the `v1` docs if they implement the same v1 contract.
 
 ## Documentation Branches
 
-Each major docs branch should pin compatible content. For example, the `v1`
-documentation branch should point its specification submodule at the `v1`
-specification branch:
-
-```text
-documentation@v1
-  docs/specification -> specification@v1
-```
+Each major docs branch should link to the matching specification version and
+document only implementations that are available for that version.
 
 The version dropdown reads `versions.json` from the live docs site. That file is
 owned by `main`, so adding a new docs version only requires updating one file in

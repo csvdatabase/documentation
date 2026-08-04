@@ -3,16 +3,6 @@ const sidebars = {
     "intro",
     "getting-started",
     "versioning",
-    {
-      type: "category",
-      label: "Contributing",
-      collapsed: true,
-      items: [
-        "contributing/contributing/roadmap",
-        "contributing/contributing/contributing",
-        "contributing/contributing/governance"
-      ]
-    },
     "reference/types",
     "reference/validation",
     {
@@ -36,24 +26,6 @@ const sidebars = {
         "server/overview",
         "server/requests",
         "server/responses"
-      ]
-    },
-    {
-      type: "category",
-      label: "Specification",
-      collapsed: true,
-      items: [
-        "specification/docs/specification/file-structure",
-        "specification/docs/specification/database-section",
-        "specification/docs/specification/table-schema",
-        "specification/docs/specification/table-data",
-        "specification/docs/specification/row-index",
-        "specification/docs/specification/relationships-and-joins",
-        "specification/docs/specification/types-and-values",
-        "specification/docs/specification/validation",
-        "specification/docs/specification/comments",
-        "specification/docs/specification/complete-example",
-        "specification/docs/specification/machine-sections"
       ]
     }
   ]

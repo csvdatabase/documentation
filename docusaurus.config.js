@@ -1,6 +1,6 @@
 const config = {
   title: "CSDB",
-  tagline: "Single-file relational databases for TypeScript, Python, SQL, and JSON",
+  tagline: "Single-file relational databases for TypeScript, SQL, and JSON",
   favicon: "img/csdb-logo.png",
 
   url: "https://csdb.dev",
@@ -93,9 +93,9 @@ const config = {
         {
           title: "Contributing",
           items: [
-            { label: "Roadmap", to: "/contributing/roadmap" },
-            { label: "Contributing", to: "/contributing/contributing" },
-            { label: "Governance", to: "/contributing/governance" }
+            { label: "Roadmap", href: "https://github.com/csvdatabase/csdb/blob/main/contributing/roadmap.md" },
+            { label: "Contributing", href: "https://github.com/csvdatabase/csdb/blob/main/contributing/contributing.md" },
+            { label: "Governance", href: "https://github.com/csvdatabase/csdb/blob/main/contributing/governance.md" }
           ]
         },
         {
@@ -120,17 +120,7 @@ const config = {
         {
           title: "Specification",
           items: [
-            { label: "File Structure", to: "/specification/docs/specification/file-structure" },
-            { label: "Database Section", to: "/specification/docs/specification/database-section" },
-            { label: "Table Schema", to: "/specification/docs/specification/table-schema" },
-            { label: "Table Data", to: "/specification/docs/specification/table-data" },
-            { label: "Row Index", to: "/specification/docs/specification/row-index" },
-            { label: "Relationships And Joins", to: "/specification/docs/specification/relationships-and-joins" },
-            { label: "Types And Values", to: "/specification/docs/specification/types-and-values" },
-            { label: "Validation", to: "/specification/docs/specification/validation" },
-            { label: "Comments", to: "/specification/docs/specification/comments" },
-            { label: "Complete Example", to: "/specification/docs/specification/complete-example" },
-            { label: "Machine Sections", to: "/specification/docs/specification/machine-sections" }
+            { label: "Read the specification", href: "https://github.com/csvdatabase/specification/blob/main/specification/README.md" }
           ]
         },
         {
@@ -150,7 +140,7 @@ const config = {
       copyright: `Copyright ${new Date().getFullYear()} CSDB`
     },
     prism: {
-      additionalLanguages: ["python", "typescript", "yaml", "sql", "json"]
+      additionalLanguages: ["typescript", "yaml", "sql", "json"]
     },
     colorMode: {
       defaultMode: "light",

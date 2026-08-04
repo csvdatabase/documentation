@@ -13,14 +13,7 @@ import TabItem from '@theme/TabItem';
 <TabItem value="ts" label="TypeScript">
 
 ```bash
-npm install @csdb/typescript
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```bash
-pip install csdb
+npm install @csvdatabase/csdb
 ```
 
 </TabItem>
@@ -32,7 +25,7 @@ pip install csdb
 <TabItem value="ts" label="TypeScript">
 
 ```ts
-import { CSDBDatabase } from "@csdb/typescript";
+import { CSDBDatabase } from "@csvdatabase/csdb";
 
 const db = CSDBDatabase.parse(`--- csdb
 format: CSDB
@@ -58,35 +51,6 @@ n_001,hello
 ```
 
 </TabItem>
-<TabItem value="py" label="Python">
-
-```py
-from csdb import CSDBDatabase
-
-db = CSDBDatabase.parse("""--- csdb
-format: CSDB
-version: 1
-name: demo
-tables:
-  - notes
-
---- table:notes:schema
-name: notes
-columns:
-  id: text
-  body: text
-required:
-  - id
-primary_key:
-  columns: [id]
-
---- table:notes:data
-id,body
-n_001,hello
-""")
-```
-
-</TabItem>
 </Tabs>
 
 ## Insert And Query Rows
@@ -102,21 +66,6 @@ const notes = db.table("notes")
   .where("body", "!=", null)
   .orderBy("id")
   .all();
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.table("notes").insert({"id": "n_002", "body": "from the fluent API"})
-db.table("notes").insert({"id": "n_003", "body": None})
-
-notes = (
-    db.table("notes")
-    .where("body", "!=", None)
-    .order_by("id")
-    .all()
-)
 ```
 
 </TabItem>
@@ -193,18 +142,9 @@ represent `null`, while quoted empty strings remain empty strings.
 <TabItem value="ts" label="TypeScript">
 
 ```ts
-import { saveCSDB } from "@csdb/typescript";
+import { saveCSDB } from "@csvdatabase/csdb";
 
 await saveCSDB(db, "demo.csdb", { machineIndexes: "omit" });
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-from csdb import save_csdb
-
-save_csdb(db, "demo.csdb", machine_indexes="omit")
 ```
 
 </TabItem>

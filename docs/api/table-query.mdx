@@ -24,16 +24,6 @@ db.table("workers").where("email IS NOT NULL");
 ```
 
 </TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.table("workers").where("id", "=", "w_001")
-db.table("workers").where({"email": "ada@example.com"})
-db.table("workers").where("email", "=", None)
-db.table("workers").where("email IS NOT NULL")
-```
-
-</TabItem>
 <TabItem value="sql" label="SQL">
 
 ```sql
@@ -93,14 +83,6 @@ db.table("workers").select("*").all();
 ```
 
 </TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.table("workers").select(["id", "email"]).all()
-db.table("workers").select("*").all()
-```
-
-</TabItem>
 <TabItem value="sql" label="SQL">
 
 ```sql
@@ -137,13 +119,6 @@ Join a foreign-key relationship by relationship name.
 
 ```ts
 db.table("sessions").join("worker").all();
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.table("sessions").join("worker").all()
 ```
 
 </TabItem>
@@ -187,13 +162,6 @@ db.table("workers").orderBy("id", "desc").all();
 ```
 
 </TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.table("workers").order_by("id", "desc").all()
-```
-
-</TabItem>
 <TabItem value="sql" label="SQL">
 
 ```sql
@@ -231,13 +199,6 @@ Restrict result count.
 
 ```ts
 db.table("workers").limit(10).all();
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.table("workers").limit(10).all()
 ```
 
 </TabItem>
@@ -282,13 +243,6 @@ const rows = db.table("workers").all();
 ```
 
 </TabItem>
-<TabItem value="py" label="Python">
-
-```py
-rows = db.table("workers").all()
-```
-
-</TabItem>
 <TabItem value="sql" label="SQL">
 
 ```sql
@@ -324,13 +278,6 @@ Return the first matching row or no value.
 
 ```ts
 const worker = db.table("workers").where("id", "=", "w_001").first();
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-worker = db.table("workers").where("id", "=", "w_001").first()
 ```
 
 </TabItem>
@@ -385,16 +332,6 @@ db.table("workers").insert([
 ```
 
 </TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.table("workers").insert({"id": "w_001", "name": "Ada", "email": "ada@example.com"})
-db.table("workers").insert([
-    {"id": "w_002", "name": "Grace", "email": "grace@example.com"}
-])
-```
-
-</TabItem>
 <TabItem value="sql" label="SQL">
 
 ```sql
@@ -434,13 +371,6 @@ Update matching rows.
 
 ```ts
 db.table("workers").where("id", "=", "w_001").update({ email: "ada@csdb.dev" });
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.table("workers").where("id", "=", "w_001").update({"email": "ada@csdb.dev"})
 ```
 
 </TabItem>
@@ -487,13 +417,6 @@ db.table("workers").where("id", "=", "w_001").delete();
 ```
 
 </TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.table("workers").where("id", "=", "w_001").delete()
-```
-
-</TabItem>
 <TabItem value="sql" label="SQL">
 
 ```sql
@@ -533,14 +456,6 @@ Find a row using the table's primary key index.
 ```ts
 const worker = db.table("workers").byPrimaryKey("w_001");
 const line = db.table("invoice_lines").byPrimaryKey(["inv_001", "line_1"]);
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-worker = db.table("workers").by_primary_key("w_001")
-line = db.table("invoice_lines").by_primary_key(["inv_001", "line_1"])
 ```
 
 </TabItem>

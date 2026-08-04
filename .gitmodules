@@ -1,6 +1,0 @@
-[submodule "specification"]
-	path = docs/specification
-	url = https://github.com/csvdatabase/specification.git
-[submodule "contributing"]
-	path = docs/contributing
-	url = https://github.com/csvdatabase/csdb.git

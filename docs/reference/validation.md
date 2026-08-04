@@ -19,13 +19,6 @@ db.validate();
 ```
 
 </TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db.validate()
-```
-
-</TabItem>
 <TabItem value="json" label="JSON">
 
 ```json

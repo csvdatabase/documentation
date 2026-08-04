@@ -18,5 +18,7 @@ npm start
 npm run build
 ```
 
-The specification is included through the `docs/specification` Git submodule. Make format
-changes in the specification repository, then update the pinned submodule commit.
+Format and project-governance documents live in their source repositories and
+are linked from this site. Make those changes in the
+[specification](https://github.com/csvdatabase/specification) or
+[main project](https://github.com/csvdatabase/csdb) repository.

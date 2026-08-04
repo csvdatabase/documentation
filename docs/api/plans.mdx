@@ -59,26 +59,6 @@ Produced by fluent selection methods, `SELECT`, or a JSON `select` command.
 ```
 
 </TabItem>
-<TabItem value="py" label="Python">
-
-```py
-{
-    "kind": "select",
-    "table": "workers",
-    "columns": ["id", "email"],
-    "joins": [],
-    "where": {
-        "type": "is-null",
-        "expr": {"type": "identifier", "name": "email"},
-        "not": True,
-    },
-    "order_by": [{"column": "id", "direction": "asc"}],
-    "limit": 10,
-    "output": "objects",
-}
-```
-
-</TabItem>
 <TabItem value="sql" label="SQL">
 
 ```sql
@@ -126,15 +106,6 @@ Produced by fluent mutation methods, SQL, or JSON mutation commands.
 { kind: "insert", table: "workers", rows: [{ id: "w_001" }] }
 { kind: "update", table: "workers", set: { email: "ada@example.com" }, where: expression }
 { kind: "delete", table: "workers", where: expression }
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-{"kind": "insert", "table": "workers", "rows": [{"id": "w_001"}]}
-{"kind": "update", "table": "workers", "set": {"email": "ada@example.com"}, "where": expression}
-{"kind": "delete", "table": "workers", "where": expression}
 ```
 
 </TabItem>
@@ -208,14 +179,6 @@ Produced by database table methods, compact DDL SQL, or JSON DDL commands.
 ```ts
 { kind: "create-table", schema }
 { kind: "drop-table", table: "tags" }
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-{"kind": "create-table", "schema": schema}
-{"kind": "drop-table", "table": "tags"}
 ```
 
 </TabItem>

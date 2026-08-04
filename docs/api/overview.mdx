@@ -23,24 +23,7 @@ import {
   CSDBError,
   SQLError,
   ValidationError
-} from "@csdb/typescript";
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-from csdb import (
-    CSDBDatabase,
-    open_csdb,
-    save_csdb,
-    parse_csdb,
-    serialize_csdb,
-    parse_sql,
-    CSDBError,
-    SQLError,
-    ValidationError,
-)
+} from "@csvdatabase/csdb";
 ```
 
 </TabItem>
@@ -87,16 +70,6 @@ const db = await openCSDB("payroll.csdb");
 db.table("workers").insert({ id: "w_001", name: "Ada", email: "ada@example.com" });
 db.validate();
 await saveCSDB(db, "payroll.csdb");
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-db = open_csdb("payroll.csdb")
-db.table("workers").insert({"id": "w_001", "name": "Ada", "email": "ada@example.com"})
-db.validate()
-save_csdb(db, "payroll.csdb")
 ```
 
 </TabItem>
