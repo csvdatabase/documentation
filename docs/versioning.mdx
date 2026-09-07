@@ -5,43 +5,112 @@ description: How CSDB versions documentation, specification, and language implem
 
 # Versioning
 
-CSDB docs are versioned by the **specification/API major version**, not by
-individual language package versions.
+CSDB repos release independently. There are no coordinated multi-repo releases by
+default.
 
-## Repositories
+Each versioned repo owns its own `make release version=x.y.z` command. Running a
+release target in one repo only versions that repo, pushes that repo's tag, and
+creates that repo's GitHub Release.
 
-Use matching major branches across the project:
+## Versioned Repositories
 
-```text
-documentation main  -> live, latest docs at docs.csvdatabase.net
-documentation v1    -> frozen v1 docs at v1.docs.csvdatabase.net
-documentation ...
+| Repository | Version source | Release artifact |
+| --- | --- | --- |
+| `specification` | `VERSION` | GitHub Release |
+| `csdb-javascript` | `package.json` | GitHub Release + npm package |
+| `csdb-python` | `pyproject.toml` | GitHub Release + PyPI package |
+| `documentation` | `package.json` | GitHub Release + built docs verification |
+| `server-typescript` | `package.json` | GitHub Release + GHCR container image |
+| `api-typescript` | `package.json` | GitHub Release + npm package |
 
-specification main -> active specification work for the next release
-specification v1   -> frozen v1 file format and behavior contract
-specification ...
+The `website` and main `csdb` project-overview repos are not versioned packages
+right now. They can deploy or change independently without semantic releases.
 
-csdb-typescript main -> active TypeScript implementation work
-csdb-typescript v1   -> TypeScript implementation that tracks the v1 contract
-csdb-typescript ...
+## Releasing One Repo
 
-csdb-python main     -> active Python implementation work
-csdb-python v1       -> Python implementation that tracks the v1 contract
-csdb-python ...
+From the repo you want to release:
+
+```bash
+make release version=1.1.1
 ```
 
-Language packages can still publish patch and minor releases independently.
-For example, `csdb-typescript@1.6.0` and `csdb-python@1.1.0` can both belong
-to the `v1` docs if they implement the same v1 contract.
+The standard release target:
+
+1. validates that `version` is full semver (`x.y.z`)
+2. requires a clean working tree
+3. verifies major release branch rules for `x.0.0`
+4. updates that repo's version source
+5. runs repo-local checks/builds
+6. commits the version bump
+7. creates and pushes tag `v<version>`
+8. pushes the current branch
+9. creates a GitHub Release for that tag
+
+Published GitHub Releases then trigger repo-local release workflows. Package
+repos publish to their package registry from those workflows.
+
+## Major Release Branches
+
+A major release is any version whose minor and patch are both zero:
+
+```text
+1.0.0
+2.0.0
+3.0.0
+```
+
+Major releases must be cut from a matching major branch:
+
+| Version | Required branch |
+| --- | --- |
+| `1.0.0` | `v1` |
+| `2.0.0` | `v2` |
+| `3.0.0` | `v3` |
+
+For example:
+
+```bash
+git switch v1
+make release version=1.0.0
+```
+
+Patch and minor releases do not create or require new major branches. They can be
+released from the branch appropriate for that repo's maintenance flow.
+
+## Branch Utilities
+
+The documentation repo keeps two helper commands for branch visibility across
+the local checkout and the GitHub remotes:
+
+```bash
+make check-local-version
+make check-remote-version
+```
+
+Both commands list every branch they find for each tracked repo and sort the
+table by branch:
+
+```text
+Repo             Path                Branch
+----             ----                ------
+docs             .                   main
+specification    ../specification    main
+csdb-javascript  ../csdb-javascript  v1
+csdb-python      ../csdb-python      v1
+```
+
+`check-local-version` reads local repositories from paths configured in the
+Makefile. `check-remote-version` reads remote branches from GitHub URLs
+configured in the Makefile. These commands do not create branches, publish
+releases, or modify files.
 
 ## Documentation Branches
 
-Each major docs branch should link to the matching specification version and
-document only implementations that are available for that version.
+Documentation content is versioned by the specification/API major version. For
+example, the `v1` documentation branch should pin compatible v1 content and the
+`main` branch should represent the latest active docs.
 
-The version dropdown reads `versions.json` from the live docs site. That file is
-owned by `main`, so adding a new docs version only requires updating one file in
-one place:
+The version dropdown reads `versions.json` from the live docs site:
 
 ```json
 {
@@ -52,61 +121,7 @@ one place:
 }
 ```
 
-Each entry has a label shown in the UI and an absolute URL for that docs branch.
-When a user is on `v1.docs.csvdatabase.net`, the dropdown marks `v1` as the
-current version. When a user chooses another entry, the browser navigates to the
-matching hosted docs branch.
-
-Use hostname-safe labels for domains, such as `v1.docs.csvdatabase.net` or
-`v1-0.docs.csvdatabase.net`.
-
-## Make Commands
-
-Common commands:
-
-| Command | What It Does |
-| --- | --- |
-| `make help` | Prints the available documentation commands. |
-| `make docs build` | Builds the Docusaurus site into the `build` directory. |
-| `make docs dev` | Starts the local Docusaurus development server. |
-| `make check-version VERSION=v1` | Prints the current branch for each repo and marks `Y` when it matches `v1`, or `N` when it does not. |
-| `make check-version-branch VERSION=v1` | Checks whether each repo has a local or remote branch named `v1`. |
-| `make create-version VERSION=v1 docs specification csdb-typescript csdb-python` | Creates a local `v1` branch in the selected repos. |
-| `make cloudflare domain VERSION=v1` | Adds `v1.docs.csvdatabase.net` to the Pages project and creates or updates its proxied DNS CNAME. |
-
-The repo path variables are uppercase. Defaults assume the implementation repos
-live next to this documentation repo:
-
-```bash
-DOCS=.
-SPECIFICATION=../specification
-CSDB_TYPESCRIPT=../csdb-typescript
-CSDB_PYTHON=../csdb-python
-```
-
-Override paths when your checkout layout is different:
-
-```bash
-make check-version VERSION=v1 \
-  DOCS=. \
-  SPECIFICATION=/path/to/specification \
-  CSDB_TYPESCRIPT=/path/to/csdb-typescript \
-  CSDB_PYTHON=/path/to/csdb-python
-```
-
-Suggested release flow:
-
-```bash
-make check-version VERSION=v1
-make check-version-branch VERSION=v1
-make create-version VERSION=v1 docs specification csdb-typescript csdb-python
-make docs build
-```
-
-Then review the changes, update `static/versions.json` on `main`, commit, and
-push the version branch.
-
-## Hosting
+## Hosting Versioned Docs
 
 Deploy each docs branch to Cloudflare Pages:
 
@@ -116,14 +131,7 @@ v1   -> v1.docs.csvdatabase.net
 v2   -> v2.docs.csvdatabase.net
 ```
 
-GitHub Actions should build the Docusaurus site and deploy the generated
-`build` directory for `main` and `v*` branches.
-
-### Automating Version Domains
-
-Cloudflare Pages does not support wildcard custom domains, so each version
-hostname must be registered explicitly. Use the Makefile so the API calls stay
-in one shell script:
+Use the Cloudflare helper to register version domains:
 
 ```bash
 make cloudflare domain VERSION=v1
@@ -138,12 +146,3 @@ CLOUDFLARE_ZONE_ID=...
 CLOUDFLARE_PAGES_PROJECT=...
 DOCS_DOMAIN=docs.csvdatabase.net
 ```
-
-The script:
-
-```text
-adds Pages custom domain: <version>.docs.csvdatabase.net
-creates/updates DNS CNAME: <version>.docs.csvdatabase.net -> <version>.<pages-project>.pages.dev
-```
-
-Run it after Cloudflare has successfully built the version branch at least once.

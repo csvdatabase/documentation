@@ -2,15 +2,18 @@ SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
 VERSION ?=
+version ?=
 DOCS ?= .
 SPECIFICATION ?= ../specification
-CSDB_TYPESCRIPT ?= ../csdb-typescript
+CSDB_JAVASCRIPT ?= ../csdb-javascript
+CSDB_TYPESCRIPT ?= $(CSDB_JAVASCRIPT)
 CSDB_PYTHON ?= ../csdb-python
 
-REPO_TARGETS := docs specification csdb-typescript csdb-python
-SELECTED_REPOS := $(filter $(REPO_TARGETS),$(MAKECMDGOALS))
+RELEASE_VERSION := $(if $(version),$(version),$(VERSION))
+LOCAL_VERSION_REPOS := docs=$(DOCS) specification=$(SPECIFICATION) csdb-javascript=$(CSDB_JAVASCRIPT) csdb-python=$(CSDB_PYTHON)
+REMOTE_VERSION_REPOS := docs=https://github.com/csvdatabase/documentation.git specification=https://github.com/csvdatabase/specification.git csdb-javascript=https://github.com/csvdatabase/csdb-javascript.git csdb-python=https://github.com/csvdatabase/csdb-python.git
 
-.PHONY: help docs cloudflare build dev serve domain version-domain check-version check-version-branch create-version require-version require-selected-repos $(REPO_TARGETS)
+.PHONY: help docs cloudflare build dev serve domain version-domain check-local-version check-remote-version require-version release verify-release-version verify-major-branch verify-clean-tree require-gh
 
 help:
 	@echo "CSDB documentation commands"
@@ -19,21 +22,15 @@ help:
 	@echo "  make docs build"
 	@echo "  make docs dev"
 	@echo ""
-	@echo "Version checks:"
-	@echo "  make check-version VERSION=v1"
-	@echo "  make check-version-branch VERSION=v1"
+	@echo "Repo release:"
+	@echo "  make release version=1.1.1"
 	@echo ""
-	@echo "Version creation:"
-	@echo "  make create-version VERSION=v1 docs specification csdb-typescript csdb-python"
+	@echo "Branch checks:"
+	@echo "  make check-local-version"
+	@echo "  make check-remote-version"
 	@echo ""
 	@echo "Cloudflare:"
 	@echo "  make cloudflare domain VERSION=v1"
-	@echo ""
-	@echo "Path variables:"
-	@echo "  DOCS=$(DOCS)"
-	@echo "  SPECIFICATION=$(SPECIFICATION)"
-	@echo "  CSDB_TYPESCRIPT=$(CSDB_TYPESCRIPT)"
-	@echo "  CSDB_PYTHON=$(CSDB_PYTHON)"
 
 build:
 	npm run build
@@ -44,6 +41,43 @@ dev:
 serve:
 	npm run serve
 
+release: verify-release-version verify-major-branch require-gh verify-clean-tree
+	npm version "$(RELEASE_VERSION)" --no-git-tag-version
+	npm install --package-lock-only --ignore-scripts
+	npm run build
+	git add package.json package-lock.json
+	git commit -m "chore: release v$(RELEASE_VERSION)"
+	git tag -a "v$(RELEASE_VERSION)" -m "v$(RELEASE_VERSION)"
+	git push origin HEAD
+	git push origin "v$(RELEASE_VERSION)"
+	gh release create "v$(RELEASE_VERSION)" --target "$$(git branch --show-current)" --title "v$(RELEASE_VERSION)" --notes "Release v$(RELEASE_VERSION)"
+
+verify-release-version:
+	@test -n "$(RELEASE_VERSION)" || { echo "usage: make release version=1.1.1"; exit 1; }
+	@if [[ ! "$(RELEASE_VERSION)" =~ ^[0-9]+\.[0-9]+\.[0-9]+$$ ]]; then \
+		echo "version must be semver like 1.1.1"; \
+		exit 1; \
+	fi
+
+verify-major-branch: verify-release-version
+	@if [[ "$(RELEASE_VERSION)" =~ ^([0-9]+)\.0\.0$$ ]]; then \
+		expected="v$${BASH_REMATCH[1]}"; \
+		current="$$(git branch --show-current)"; \
+		if [[ "$$current" != "$$expected" ]]; then \
+			echo "major release $(RELEASE_VERSION) must be cut from branch $$expected; current branch is $$current"; \
+			exit 1; \
+		fi; \
+	fi
+
+verify-clean-tree:
+	@if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$$(git ls-files --others --exclude-standard)" ]]; then \
+		echo "working tree must be clean before running make release"; \
+		exit 1; \
+	fi
+
+require-gh:
+	@command -v gh >/dev/null 2>&1 || { echo "gh is required to create the GitHub release"; exit 1; }
+
 cloudflare:
 	@:
 
@@ -53,72 +87,11 @@ domain: require-version
 version-domain: domain
 
 require-version:
-	@test -n "$(VERSION)" || { echo "Set VERSION, for example: make check-version VERSION=v1"; exit 1; }
+	@test -n "$(VERSION)" || { echo "Set VERSION, for example: make cloudflare domain VERSION=v1"; exit 1; }
 	@case "$(VERSION)" in v[0-9]*) true ;; *) echo "VERSION should look like v1, v2, etc."; exit 1 ;; esac
 
-require-selected-repos:
-	@test -n "$(SELECTED_REPOS)" || { echo "Choose repos, for example: make create-version VERSION=v1 docs specification csdb-typescript csdb-python"; exit 1; }
+check-local-version:
+	@scripts/check-version-branches.py local $(LOCAL_VERSION_REPOS)
 
-check-version: require-version
-	@printf "%-16s %-28s %-18s %-3s\n" "Repo" "Path" "Current" "OK"
-	@printf "%-16s %-28s %-18s %-3s\n" "----" "----" "-------" "--"
-	@for entry in \
-		"docs|$(DOCS)" \
-		"specification|$(SPECIFICATION)" \
-		"csdb-typescript|$(CSDB_TYPESCRIPT)" \
-		"csdb-python|$(CSDB_PYTHON)"; do \
-		repo="$${entry%%|*}"; \
-		path="$${entry#*|}"; \
-		if git -C "$$path" rev-parse --is-inside-work-tree >/dev/null 2>&1; then \
-			current=$$(git -C "$$path" branch --show-current); \
-			test -n "$$current" || current="detached:$$(git -C "$$path" rev-parse --short HEAD)"; \
-			if [ "$$current" = "$(VERSION)" ]; then ok="Y"; else ok="N"; fi; \
-		else \
-			current="missing"; \
-			ok="N"; \
-		fi; \
-		printf "%-16s %-28s %-18s %-3s\n" "$$repo" "$$path" "$$current" "$$ok"; \
-	done
-
-check-version-branch: require-version
-	@printf "%-16s %-28s %-18s %-3s\n" "Repo" "Path" "Branch" "OK"
-	@printf "%-16s %-28s %-18s %-3s\n" "----" "----" "------" "--"
-	@for entry in \
-		"docs|$(DOCS)" \
-		"specification|$(SPECIFICATION)" \
-		"csdb-typescript|$(CSDB_TYPESCRIPT)" \
-		"csdb-python|$(CSDB_PYTHON)"; do \
-		repo="$${entry%%|*}"; \
-		path="$${entry#*|}"; \
-		if git -C "$$path" rev-parse --is-inside-work-tree >/dev/null 2>&1 && \
-			{ git -C "$$path" show-ref --verify --quiet "refs/heads/$(VERSION)" || \
-			  git -C "$$path" ls-remote --exit-code --heads origin "$(VERSION)" >/dev/null 2>&1; }; then \
-			ok="Y"; \
-		else \
-			ok="N"; \
-		fi; \
-		printf "%-16s %-28s %-18s %-3s\n" "$$repo" "$$path" "$(VERSION)" "$$ok"; \
-	done
-
-create-version: require-version require-selected-repos
-	@for repo in $(SELECTED_REPOS); do \
-		case "$$repo" in \
-			docs) path="$(DOCS)" ;; \
-			specification) path="$(SPECIFICATION)" ;; \
-			csdb-typescript) path="$(CSDB_TYPESCRIPT)" ;; \
-			csdb-python) path="$(CSDB_PYTHON)" ;; \
-		esac; \
-		if ! git -C "$$path" rev-parse --is-inside-work-tree >/dev/null 2>&1; then \
-			echo "$$repo: missing git repo at $$path"; \
-			exit 1; \
-		fi; \
-		if git -C "$$path" show-ref --verify --quiet "refs/heads/$(VERSION)"; then \
-			echo "$$repo: $(VERSION) already exists"; \
-		else \
-			echo "$$repo: creating $(VERSION)"; \
-			git -C "$$path" switch -c "$(VERSION)"; \
-		fi; \
-	done
-
-$(REPO_TARGETS):
-	@:
+check-remote-version:
+	@scripts/check-version-branches.py remote $(REMOTE_VERSION_REPOS)
