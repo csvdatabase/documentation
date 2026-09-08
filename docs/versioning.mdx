@@ -8,17 +8,21 @@ Every `1.x.x` release must come from `v1`, every `2.x.x` from `v2`, and so on. I
 
 ```bash
 # From the central csdb repo (with sibling checkouts):
-bash scripts/upsert-branch.sh v1
+bash scripts/upsert-branch-all.sh v1
 bash scripts/release-all.sh 1.0.0 true # dry run
 bash scripts/release-all.sh 1.0.0
+
+# From any versioned repo:
+bash scripts/upsert-branch.sh v1
 bash scripts/release.sh 1.0.0 true # dry run
+bash scripts/release.sh 1.0.0
 ```
 
 Pass `true` as the second release argument for a dry run; omit it to release. Scripts resolve repo paths relative to their own location.
 
-The release repos are `csdb-typescript`, `api-typescript`, and `server-typescript`. Python is currently a placeholder without a publisher. Docs deploy on commits; the homepage has its own deployment workflow. Central releases run sequentially and stop on failure; already published releases are not rolled back. To resume, release the remaining repos individually using the same version.
+The release repos are `specification`, `csdb-typescript`, `api-typescript`, `csdb-python`, `documentation`, and `server-typescript`. All six use the same Bash commands, branch checks, version updates, annotated tags, and GitHub releases. The TypeScript packages publish to npm, Python publishes to PyPI, the server publishes a Docker image, documentation builds its site, and the specification releases its Markdown source. Documentation also deploys on branch commits. `csdb` and `website` are excluded. Central releases run sequentially and stop on failure; already published releases are not rolled back. To resume, release the remaining repos individually using the same version.
 
-`bash scripts/upsert-branch.sh v1` in a versioned repo requires a clean checkout, switches to the existing branch or creates it from HEAD, fast-forwards from origin when present, and pushes the branch. Only `v` followed by digits is accepted. In `csdb`, this script only calls the versioned sibling repos' Bash scripts; it does not create, switch, or push a branch in `csdb` itself. The central `csdb` repo has no versioned releases. The homepage (`website`) is excluded from these version-branch commands.
+`bash scripts/upsert-branch.sh v1` in a versioned repo requires a clean checkout, switches to the existing branch or creates it from HEAD, fast-forwards from origin when present, and pushes the branch. Only `v` followed by digits is accepted. In `csdb`, `bash scripts/upsert-branch-all.sh v1` only calls the versioned sibling repos' Bash scripts; it does not create, switch, or push a branch in `csdb` itself. The central `csdb` repo has no versioned releases. The homepage (`website`) is excluded from these version-branch commands.
 
 ## Documentation builds
 

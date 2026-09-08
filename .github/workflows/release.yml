@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -23,22 +25,10 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           TARGET_COMMITISH: ${{ github.event.release.target_commitish }}
-        run: |
-          node --input-type=module --eval '
-            import fs from "node:fs";
-            const tag = process.env.RELEASE_TAG ?? "";
-            const target = process.env.TARGET_COMMITISH ?? "";
-            const match = tag.match(/^v([0-9]+)\.([0-9]+)\.([0-9]+)$/);
-            if (!match) throw new Error(`Release tag must look like v1.1.1, received ${tag}`);
-            const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
-            if (tag !== `v${packageJson.version}`) {
-              throw new Error(`Release tag ${tag} does not match package version ${packageJson.version}`);
-            }
-            if (match[2] === "0" && match[3] === "0" && target !== `v${match[1]}`) {
-              throw new Error(`Major release ${tag} must target branch v${match[1]}, received ${target}`);
-            }
-          '
+        run: bash scripts/verify-release.sh
       - name: Install dependencies
         run: npm ci
       - name: Build
+        env:
+          DOCS_BRANCH: ${{ github.event.release.target_commitish }}
         run: npm run build
