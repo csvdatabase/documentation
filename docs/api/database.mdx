@@ -35,8 +35,7 @@ const db = CSDBDatabase.parse(text, { validate: true });
 </TabItem>
 </Tabs>
 
-JSON clients select an existing server-managed database with the request envelope's
-`database` field; they do not submit arbitrary files or server paths.
+JSON clients select an existing server-managed database with the request envelope's `database` field; they do not submit arbitrary files or server paths.
 
 ## Start Table Query
 
@@ -52,8 +51,7 @@ const query = db.table("workers");
 </TabItem>
 </Tabs>
 
-JSON commands are complete, stateless plans, so there is no remote query-builder
-object to create.
+JSON commands are complete, stateless plans, so there is no remote query-builder object to create.
 
 ## Query Table
 

@@ -6,9 +6,7 @@ sidebar_position: 1
 
 # Setting Up Server
 
-The CSDB server is a Docker-deployable HTTP service for `.csdb` databases. It
-mounts a data directory, opens server-managed CSDB files from that directory,
-and exposes JSON commands over HTTP.
+The CSDB server is a Docker-deployable HTTP service for `.csdb` databases. It mounts a data directory, opens server-managed CSDB files from that directory, and exposes JSON commands over HTTP.
 
 ## Docker Compose
 
@@ -52,8 +50,7 @@ maps to:
 data/payroll.csdb
 ```
 
-Clients do not send filesystem paths. The server resolves database names inside
-its configured data directory and prevents path traversal.
+Clients do not send filesystem paths. The server resolves database names inside its configured data directory and prevents path traversal.
 
 ## Configuration
 

@@ -6,7 +6,9 @@
     "start": "docusaurus start",
     "build": "docusaurus build",
     "serve": "docusaurus serve",
-    "clear": "docusaurus clear"
+    "clear": "docusaurus clear",
+    "prebuild": "bash scripts/sync-specification.sh",
+    "prestart": "bash scripts/sync-specification.sh"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",

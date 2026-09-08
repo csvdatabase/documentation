@@ -26,18 +26,13 @@ The TypeScript runtime implements:
 
 ## Null Values
 
-All implemented column types accept `null` when the column is optional and not
-part of the primary key. Required columns and primary key columns cannot be
-`null`.
+All implemented column types accept `null` when the column is optional and not part of the primary key. Required columns and primary key columns cannot be `null`.
 
 - TypeScript row values include `null`.
-- Unquoted empty CSV fields decode as `null` for optional, non-primary-key
-  columns.
+- Unquoted empty CSV fields decode as `null` for optional, non-primary-key columns.
 - `null` serializes as an unquoted empty CSV field.
-- Quoted empty strings, written as `""`, remain empty strings and do not become
-  `null`.
-- Missing values in inserted rows are filled from defaults when a default exists;
-  otherwise they become `null` for optional, non-primary-key columns.
+- Quoted empty strings, written as `""`, remain empty strings and do not become `null`.
+- Missing values in inserted rows are filled from defaults when a default exists; otherwise they become `null` for optional, non-primary-key columns.
 - Explicit `null` values are preserved and are not replaced by defaults.
 
 SQL can use the `NULL` literal and `IS NULL` / `IS NOT NULL` predicates.
@@ -58,10 +53,7 @@ The TypeScript server converts runtime values to lossless JSON values:
 | `date`, `timestamp` | string |
 | `json` | the stored JSON object, array, primitive, or null |
 
-`bigint` and `numeric` use strings because JSON numbers cannot preserve every
-integer or exact decimal. If a `real` column explicitly permits `NaN` or infinity,
-the JSON bridge returns `"NaN"`, `"Infinity"`, or `"-Infinity"` rather than an
-invalid JSON number.
+`bigint` and `numeric` use strings because JSON numbers cannot preserve every integer or exact decimal. If a `real` column explicitly permits `NaN` or infinity, the JSON bridge returns `"NaN"`, `"Infinity"`, or `"-Infinity"` rather than an invalid JSON number.
 
 ## Aliases
 

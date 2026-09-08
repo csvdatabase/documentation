@@ -4,8 +4,7 @@ title: Validation
 sidebar_position: 2
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
 
 CSDB readers and writers validate both the file structure and relational model.
 

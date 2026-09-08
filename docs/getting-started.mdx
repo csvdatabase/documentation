@@ -133,8 +133,7 @@ Send each object below as a separate `POST /v1/commands` request:
 </TabItem>
 </Tabs>
 
-Optional non-primary-key columns accept `null`. In CSV, unquoted empty fields
-represent `null`, while quoted empty strings remain empty strings.
+Optional non-primary-key columns accept `null`. In CSV, unquoted empty fields represent `null`, while quoted empty strings remain empty strings.
 
 ## Save A File
 
@@ -150,8 +149,7 @@ await saveCSDB(db, "demo.csdb", { machineIndexes: "omit" });
 </TabItem>
 </Tabs>
 
-The JSON server does not accept save paths. It resolves `database` inside its
-configured data directory and automatically persists successful mutations.
+The JSON server does not accept save paths. It resolves `database` inside its configured data directory and automatically persists successful mutations.
 
 ## What To Read Next
 

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# bash scripts/cloudflare-docs-version-domain.sh v1
+# Requires CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_ZONE_ID, CLOUDFLARE_PAGES_PROJECT.
+
 set -euo pipefail
 
 VERSION="${1:-${VERSION:-}}"
@@ -8,13 +11,7 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-case "$VERSION" in
-  v[0-9]*) ;;
-  *)
-    echo "VERSION should look like v1, v2, etc. Got: ${VERSION}" >&2
-    exit 1
-    ;;
-esac
+[[ "$VERSION" =~ ^v[0-9]+$ ]] || { echo "Version must be v<number>" >&2; exit 1; }
 
 : "${CLOUDFLARE_API_TOKEN:?Set CLOUDFLARE_API_TOKEN}"
 : "${CLOUDFLARE_ACCOUNT_ID:?Set CLOUDFLARE_ACCOUNT_ID}"

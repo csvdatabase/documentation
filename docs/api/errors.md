@@ -30,8 +30,7 @@ try {
 }
 ```
 
-The CSDB server maps errors to HTTP status codes and a stable response body. It
-never returns a TypeScript stack trace to the client.
+The CSDB server maps errors to HTTP status codes and a stable response body. It never returns a TypeScript stack trace to the client.
 
 ```json
 {

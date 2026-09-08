@@ -21,6 +21,15 @@ const config = {
     locales: ["en"]
   },
 
+  plugins: [
+    ["@docusaurus/plugin-content-docs", {
+      id: "specification",
+      path: "specification/specification",
+      routeBasePath: "specification",
+      sidebarPath: require.resolve("./specification-sidebars.js")
+    }]
+  ],
+
   presets: [
     [
       "classic",
@@ -120,7 +129,7 @@ const config = {
         {
           title: "Specification",
           items: [
-            { label: "Read the specification", href: "https://github.com/csvdatabase/specification/blob/main/specification/README.md" }
+            { label: "Read the specification", to: "/specification/" }
           ]
         },
         {

@@ -10,21 +10,15 @@ sidebar_position: 1
     This project is under active development and may have drastic changes
   </div>
   <div>
-    CSDB is a single-file, multi-table database format. It keeps metadata, schemas,
-    CSV rows, relationships, comments, and optional machine indexes in one
-    human-readable UTF-8 document.
+    CSDB is a single-file, multi-table database format. It keeps metadata, schemas, CSV rows, relationships, comments, and optional machine indexes in one human-readable UTF-8 document.
   </div>
 </div>
 
-CSDB separates a stable file format from language-specific libraries. The same
-document can be read by TypeScript, Python, SQL tools, or a JSON server without
-changing the file itself.
+CSDB separates a stable file format from language-specific libraries. The same document can be read by TypeScript, Python, SQL tools, or a JSON server without changing the file itself.
 
 ## Document
 
-A CSDB document is one text file. It starts with database metadata, then repeats a
-schema section and a CSV data section for each table. Optional machine sections can
-appear at the bottom for faster lookup.
+A CSDB document is one text file. It starts with database metadata, then repeats a schema section and a CSV data section for each table. Optional machine sections can appear at the bottom for faster lookup.
 
 ```text
 --- csdb
@@ -44,14 +38,11 @@ A section starts with a header line and continues until the next section.
 section content
 ```
 
-The database section must appear first. For each table, the schema section must be
-followed by that table's data section. Machine sections, when present, must come
-after all human sections.
+The database section must appear first. For each table, the schema section must be followed by that table's data section. Machine sections, when present, must come after all human sections.
 
 ## Database
 
-The database metadata declares the format, version, database name, table order, and
-optional machine indexing settings.
+The database metadata declares the format, version, database name, table order, and optional machine indexing settings.
 
 ```yaml
 format: CSDB
@@ -77,12 +68,9 @@ comments:
 
 ## Table
 
-Each table has a YAML schema and CSV rows. The schema declares columns, required
-fields, defaults, primary keys, unique constraints, foreign keys, constraints,
-indexes, computed fields, and comments.
+Each table has a YAML schema and CSV rows. The schema declares columns, required fields, defaults, primary keys, unique constraints, foreign keys, constraints, indexes, computed fields, and comments.
 
-The data section is CSV. Its header must exactly match schema column order plus
-stored computed fields.
+The data section is CSV. Its header must exactly match schema column order plus stored computed fields.
 
 ```csv
 id,worker_id,start_time,end_time,hourly_pay,metadata
@@ -98,23 +86,17 @@ Rows are language-native objects:
 - Python: `dict[str, RowValue]`
 - JSON: an object whose property values follow the JSON wire mapping
 
-Every stored value is serialized as text in CSV. The type registry controls how
-values are decoded and encoded.
+Every stored value is serialized as text in CSV. The type registry controls how values are decoded and encoded.
 
-An unquoted empty CSV field is `null` when the column is optional. A quoted empty
-field is an empty string.
+An unquoted empty CSV field is `null` when the column is optional. A quoted empty field is an empty string.
 
 ## Machine Sections
 
-Machine sections are optional fixed-width sections for fast lookup and section
-offsets. Writers can omit them for simpler diffs or emit them when
-`machine_indexing.enabled` is true.
+Machine sections are optional fixed-width sections for fast lookup and section offsets. Writers can omit them for simpler diffs or emit them when `machine_indexing.enabled` is true.
 
 ## Validation
 
-Readers and writers validate section order, names, schema references, CSV headers,
-required values, supported types, primary keys, unique constraints, check
-constraints, and foreign keys.
+Readers and writers validate section order, names, schema references, CSV headers, required values, supported types, primary keys, unique constraints, check constraints, and foreign keys.
 
 ## Query Surfaces
 
@@ -126,12 +108,9 @@ CSDB exposes several surfaces over the same document model:
 
 ## Implementation Surfaces
 
-The TypeScript and Python libraries expose the same CSDB document model with
-language-native APIs. The TypeScript server exposes JSON commands for HTTP
-clients and uses the same query-plan shapes as the library APIs.
+The TypeScript and Python libraries expose the same CSDB document model with language-native APIs. The TypeScript server exposes JSON commands for HTTP clients and uses the same query-plan shapes as the library APIs.
 
-Start with [Getting Started](./getting-started), then read the
-[API Reference](./api/overview).
+Start with [Getting Started](./getting-started), then read the [API Reference](./api/overview).
 
 ## Project Repositories
 

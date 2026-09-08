@@ -23,9 +23,7 @@ const db = await openCSDB("payroll.csdb");
 </TabItem>
 </Tabs>
 
-JSON clients name a server-managed database in every command envelope. The server
-resolves that logical identifier inside its configured data directory and opens
-the file; clients cannot supply filesystem paths.
+JSON clients name a server-managed database in every command envelope. The server resolves that logical identifier inside its configured data directory and opens the file; clients cannot supply filesystem paths.
 
 ## Save File
 
@@ -43,8 +41,7 @@ await saveCSDB(db, "payroll.csdb", { machineIndexes: "auto" });
 </TabItem>
 </Tabs>
 
-The JSON server automatically saves each successful mutation atomically. It does
-not expose a command that writes to a client-selected path.
+The JSON server automatically saves each successful mutation atomically. It does not expose a command that writes to a client-selected path.
 
 ## Parse Text
 

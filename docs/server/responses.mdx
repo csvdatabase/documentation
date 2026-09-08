@@ -55,11 +55,6 @@ Common status mappings:
 
 ## Persistence
 
-The server opens databases with automatic persistence enabled. Every successful
-mutation is validated and saved atomically before the response is returned. A
-failed mutation is rolled back and does not modify the `.csdb` file. Read
-commands never write the file.
+The server opens databases with automatic persistence enabled. Every successful mutation is validated and saved atomically before the response is returned. A failed mutation is rolled back and does not modify the `.csdb` file. Read commands never write the file.
 
-The server serializes commands for the same database so concurrent requests
-cannot overwrite one another. Commands for different databases may run in
-parallel.
+The server serializes commands for the same database so concurrent requests cannot overwrite one another. Commands for different databases may run in parallel.

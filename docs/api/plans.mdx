@@ -7,8 +7,7 @@ sidebar_position: 6
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Plans are the structured operation format executed by CSDB. All public query
-surfaces converge on the same executor:
+Plans are the structured operation format executed by CSDB. All public query surfaces converge on the same executor:
 
 - The fluent table API builds plans from chained method calls.
 - SQL text is parsed into plans before execution.
@@ -219,7 +218,4 @@ DROP TABLE tags;
 
 ## Expressions
 
-Expressions represent literals, identifiers, comparisons, `IS NULL`, `AND`, `OR`,
-and `NOT`. They are used in plan `where` fields and constraint evaluation. JSON
-uses the exact discriminated expression objects documented in
-[Command Requests](../server/requests#expression-trees).
+Expressions represent literals, identifiers, comparisons, `IS NULL`, `AND`, `OR`, and `NOT`. They are used in plan `where` fields and constraint evaluation. JSON uses the exact discriminated expression objects documented in [Command Requests](../server/requests#expression-trees).
